@@ -6,7 +6,7 @@ Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti
 Pro získání odpovědí byly vytvořeny dvě zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
 
 Výzkumné otázky:    
-- [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1.-rostou-v-průběhu-let-mzdy-ve-všech-odvětvích,-nebo-v-některých-klesají? "Otázka č.1")
+- [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji "Otázka č.1")
 
 ## 2. Popis primární a sekundární tabulky
 
