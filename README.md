@@ -8,6 +8,8 @@ Pro získání odpovědí byly vytvořeny dvě zdrojové tabulky (primární a s
 Výzkumné otázky:    
 [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)  
 
+https://github.com/Lenka179/SQL-Project/blob/main/README.md#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD
+
 ## 2. Popis primární a sekundární tabulky
 
 ### Primární tabulka
