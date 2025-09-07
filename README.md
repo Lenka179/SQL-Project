@@ -1,12 +1,17 @@
 # SQL-Project
 
 ## 1. Popis projekut (Proč se to dělá?)
-TODO
+
+Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti a zodpovědět několik konkrétních otázek týkajících se průměrných mezd a cen potravin v České Republice.  
+Pro dosažení výsledku byly vytvořeny dvě zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
 
 ## 2. Popis primární a sekundární tabulky
 
 ### Primární tabulka
+
 V primární tabulce jsou spojena data z přehledu o průměrných mzdách v jednotlivých odvětvích a průměrných cenách určitých komodit. Data v ní nám následně pomohou zodpovědět otázky 1 až 4.  
+Spojení tabulek o mzdách a cenách muselo být provedeno přes LEFT JOIN, protože data o mzdách máme k dispozici od roku 2000 do roku 2021, ale data pro ceny potravin zahrnují pouze období 2006 až 2018. 
+
 *Příkaz k vytvoření tabulky:*
 ```
 CREATE TABLE t_lenka_stankova_project_sql_primary_final(
@@ -51,6 +56,11 @@ GROUP BY cp.payroll_year,
     cpc.price_value
 ;
 ```
+*Primární tabulka:*
+```
+SELECT*
+FROM t_lenka_stankova_project_sql_primary_final;
+```
 
 ### Sekundární tabulka
 
@@ -59,8 +69,9 @@ TODO
 ## 2. Odpovědi na otázky
 
 **1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?**  
-> Ano, obecně lze říci, že průměrné platy ve všech odvětvích rostou.  
-> Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
+> - Ano, obecně lze říci, že průměrné platy ve všech odvětvích **rostou**.  
+> - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy byl právě v roce 2013 a zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
+> - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako výraz poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
 ```
 SELECT
@@ -82,7 +93,11 @@ SELECT
 			PARTITION BY tlsp.industry_branch_code
 			ORDER BY tlsp.payroll_year) IS NULL THEN 'null'
 		ELSE 'equal'
-	END AS payroll_trend 	
+	END AS payroll_trend,
+	avg(tlsp.average_payroll) - 
+		LAG(avg(tlsp.average_payroll)) OVER (
+			PARTITION BY tlsp.industry_branch_code 
+			ORDER BY tlsp.payroll_year) AS payroll_difference 
 FROM t_lenka_stankova_project_sql_primary_final AS tlsp
 GROUP BY tlsp.payroll_year,
 	tlsp.industry_branch_code,
@@ -92,7 +107,10 @@ ORDER BY  industry_branch_code, payroll_year desc
 ```
 
 **2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?**
-> 
+
+
+
+
 3. Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
