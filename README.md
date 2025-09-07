@@ -67,7 +67,8 @@ GROUP BY cp.payroll_year,
 *Primární tabulka:*
 ```
 SELECT*
-FROM t_lenka_stankova_project_sql_primary_final;
+FROM t_lenka_stankova_project_sql_primary_final
+;
 ```
 
 ### Sekundární tabulka
@@ -117,18 +118,19 @@ ORDER BY  industry_branch_code, payroll_year desc
 
 ## 2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?  
 
-> - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-> - V roce 2006 jsme si mohli za průměrnou mzdu 20677,- Kč koupit 1283 kg chleba nebo 1432 litrů mléka.
-> - V roce 2018 jsme si mohli za průměrnou mzdu 32485,- Kč koupit 1340 kg chleba nebo 1639 litrů mléka.
+- V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50:50.  
+- Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
+- V roce 2006 jsme si mohli za průměrnou mzdu 20678,- Kč koupit 641 kg chleba a 716 litrů mléka.
+- V roce 2018 jsme si mohli za průměrnou mzdu 32486,- Kč koupit 670 kg chleba a 820 litrů mléka.
 
 ```
 SELECT
 	payroll_year,
 	category_name,
 	price_unit,
-	round(avg(average_payroll)::NUMERIC,0) AS total_average_payroll,
+	round(avg(average_payroll) / 2 ,0) AS total_average_payroll,
 	avg(average_price) AS total_average_price,
-	round(avg(average_payroll) / avg(average_price)::NUMERIC,0) AS count_commodity_per_payroll
+	round((avg(average_payroll) / 2) / avg(average_price),0) AS count_commodity_per_payroll
 FROM t_lenka_stankova_project_sql_primary_final AS tlsp
 WHERE average_payroll IS NOT NULL 
 	AND average_price IS NOT NULL
@@ -138,11 +140,9 @@ GROUP BY payroll_year,
 	category_name,
 	price_unit,
 	price_value
-ORDER BY payroll_year;
+ORDER BY payroll_year
+;
 ```
-
-
-
 
 ## 3. Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
