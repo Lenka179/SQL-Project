@@ -7,14 +7,7 @@ Pro získání odpovědí byly vytvořeny dvě zdrojové tabulky (primární a s
 
 Výzkumné otázky:    
 [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD)  
-
-[1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)
-
-## Obsah
-
-- [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)
-
-
+[2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?](#2-kolik-je-mo%C5%BEn%C3%A9-si-koupit-litr%C5%AF-ml%C3%A9ka-a-kilogram%C5%AF-chleba-za-prvn%C3%AD-a-posledn%C3%AD-srovnateln%C3%A9-obdob%C3%AD-v-dostupn%C3%BDch-datech-cen-a-mezd)  
 
 
 
@@ -84,9 +77,6 @@ TODO
 
 ## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
 
-## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
-
-
 - Ano, obecně lze říci, že průměrné platy ve všech odvětvích **rostou**.  
 - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy byl právě v roce 2013 a zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
 - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako výraz poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
@@ -124,7 +114,8 @@ ORDER BY  industry_branch_code, payroll_year desc
 ;
 ```
 
-**2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?**  
+## 2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?  
+
 > - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
 > - V roce 2006 jsme si mohli za průměrnou mzdu 20677,- Kč koupit 1283 kg chleba nebo 1432 litrů mléka.
 > - V roce 2018 jsme si mohli za průměrnou mzdu 32485,- Kč koupit 1340 kg chleba nebo 1639 litrů mléka.
