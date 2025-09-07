@@ -10,6 +10,14 @@ Výzkumné otázky:
 
 [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)
 
+## Obsah
+
+- [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)
+- [2. Jak se liší vývoj mezd mezi regiony?](#2-jak-se-lisi-vyvoj-mezd-mezi-regiony)
+- [3. Které profese zaznamenaly největší růst?](#3-ktere-profese-zaznamenaly-nejvetsi-rust)
+
+
+
 
 ## 2. Popis primární a sekundární tabulky
 
@@ -76,6 +84,10 @@ TODO
 ## 2. Odpovědi na otázky
 
 ## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
+
+## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
+## 2. Jak se liší vývoj mezd mezi regiony?
+## 3. Které profese zaznamenaly největší růst?
 
 - Ano, obecně lze říci, že průměrné platy ve všech odvětvích **rostou**.  
 - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy byl právě v roce 2013 a zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
