@@ -6,7 +6,7 @@ Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti
 Pro získání odpovědí byly vytvořeny dvě zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
 
 Výzkumné otázky:    
-[1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-prubehu-let-mzdy-ve-vsech-odvetvich-nebo-v-nekterych-klesaji)  
+[1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD)  
 
 https://github.com/Lenka179/SQL-Project/blob/main/README.md#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD
 
