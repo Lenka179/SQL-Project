@@ -182,4 +182,23 @@ ORDER BY relative_growth_percent ASC;
 ```
 
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
+
+- Z dostupných dat vyplývá, že na analýzu lze použít období 2006 - 2018, protože pouze mezi těmito lety máme dostupná data jak o cenách tak o mzdách. 
+- V žádném ze sledovaných období nebyl meziroční nárůst cen potravin výrazně vyšší než růst mezd. Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale tomtéž roce došlo k nárůstu průměrných mezd o 6,31 %.
+
+```
+SELECT 
+	payroll_year,
+    ROUND((AVG(average_price) - 
+           LAG(AVG(average_price)) OVER (ORDER BY payroll_year)) / 
+           NULLIF(LAG(AVG(average_price)) OVER (ORDER BY payroll_year), 0) * 100, 2) AS price_percentage_change,
+    ROUND((AVG(average_payroll) - 
+           LAG(AVG(average_payroll)) OVER (ORDER BY payroll_year)) / 
+           NULLIF(LAG(AVG(average_payroll)) OVER (ORDER BY payroll_year), 0) * 100, 2) AS payroll_percentage_change
+FROM t_lenka_stankova_project_sql_primary_final
+WHERE payroll_year BETWEEN 2006 AND 2018
+GROUP BY payroll_year
+ORDER BY price_percentage_change DESC;
+```
+
 ## 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
