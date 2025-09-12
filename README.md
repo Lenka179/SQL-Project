@@ -80,7 +80,7 @@ TODO
 ## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
 
 - Ano, obecně lze říci, že průměrné platy ve všech odvětvích **rostou**.  
-- Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy byl právě v roce 2013 a zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
+- Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
 - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako výraz poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
 ```
@@ -145,5 +145,41 @@ ORDER BY payroll_year
 ```
 
 ## 3. Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
+
+- Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
+- Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
+- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **+ 0,56 %**.
+- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (-2,73 resp. -2,43 %).
+
+```
+WITH price_diffs AS (
+    SELECT 
+        tlsp.category_code,
+        tlsp.category_name,
+        tlsp.payroll_year,
+        AVG(tlsp.average_price) AS avg_price,
+        LAG(AVG(tlsp.average_price)) OVER (
+            PARTITION BY tlsp.category_code 
+            ORDER BY tlsp.payroll_year
+        ) AS previous_avg_price
+    FROM t_lenka_stankova_project_sql_primary_final AS tlsp
+    WHERE tlsp.category_name IS NOT NULL
+    GROUP BY tlsp.category_code, tlsp.category_name, tlsp.payroll_year
+)
+SELECT 
+    category_code,
+    category_name,
+    round(AVG(avg_price),2) AS overall_avg_price,
+    round(AVG(avg_price - previous_avg_price),2) AS avg_price_change,
+    CASE 
+        WHEN AVG(avg_price) != 0 THEN 
+            round(AVG(avg_price - previous_avg_price) / AVG(avg_price) * 100 , 2)
+        ELSE NULL
+    END AS relative_growth_percent
+FROM price_diffs
+GROUP BY category_code, category_name
+ORDER BY relative_growth_percent ASC;
+```
+
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 ## 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
