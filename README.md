@@ -148,7 +148,7 @@ ORDER BY payroll_year
 
 - Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
 - Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
-- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **+ 0,56 %**.
+- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **0,56 %**.
 - Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (-2,73 resp. -2,43 %).
 
 ```
@@ -184,7 +184,7 @@ ORDER BY relative_growth_percent ASC;
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 
 - Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006 - 2018, kdy máme dostupná data o mzdách i cenách.  
-- V žádném ze sledovaných období nebyl meziroční nárůst cen potravin výrazně vyšší než růst mezd. Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale tomtéž roce došlo k nárůstu průměrných mezd o 6,31 %.
+- V žádném ze sledovaných období nebyl meziroční nárůst cen potravin výrazně vyšší než růst mezd. Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale tomtéž roce došlo také k nárůstu průměrných mezd o 6,31 %.
 
 ```
 SELECT 
@@ -202,3 +202,47 @@ ORDER BY price_percentage_change DESC;
 ```
 
 ## 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
+
+- Výška HDP nemá vliv na mzdy a ceny potravin. 
+
+
+```
+WITH gdp_data AS (
+  SELECT
+    e.YEAR,
+    ROUND(AVG(e.gdp)::NUMERIC, 0) AS GDP,
+    ROUND(AVG(cp.value), 0) AS overall_avg_payroll,
+    ROUND(AVG(cp2.value)::NUMERIC ,2) AS overall_avg_price
+  FROM economies AS e 
+  JOIN czechia_payroll AS cp 
+    ON e.YEAR = cp.payroll_year 
+  JOIN czechia_price AS cp2 
+    ON e.YEAR = EXTRACT(YEAR FROM cp2.date_from)
+  WHERE e.country = 'Czech Republic' 
+    AND e.YEAR > 1989
+    AND cp.value_type_code = 5958
+  GROUP BY e.YEAR
+)
+SELECT 
+  YEAR,
+  GDP,
+  overall_avg_payroll,
+  overall_avg_price,
+  CASE 
+    WHEN GDP > LAG(GDP) OVER (ORDER BY YEAR) THEN 'increase'
+    WHEN GDP < LAG(GDP) OVER (ORDER BY YEAR) THEN 'decrease'
+    ELSE 'no change'
+  END AS gdp_trend,
+    CASE 
+    WHEN overall_avg_payroll > LAG(overall_avg_payroll) OVER (ORDER BY YEAR) THEN 'increase'
+    WHEN overall_avg_payroll < LAG(overall_avg_payroll) OVER (ORDER BY YEAR) THEN 'decrease'
+    ELSE 'no change'
+  END AS payroll_trend,
+      CASE 
+    WHEN overall_avg_price > LAG(overall_avg_price) OVER (ORDER BY YEAR) THEN 'increase'
+    WHEN overall_avg_price < LAG(overall_avg_price) OVER (ORDER BY YEAR) THEN 'decrease'
+    ELSE 'no change'
+  END AS price_trend
+FROM gdp_data
+ORDER BY YEAR DESC;
+```
