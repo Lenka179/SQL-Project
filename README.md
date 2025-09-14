@@ -17,6 +17,7 @@ Obsah
 Cílem projektu je zjistit dostupnost základních potravin pro širokou veřejnost. K dosažení cíle bylo stanoveno 5 výzkumných otázek týkajících se průměrných mezd, cen potravin a ekonomiky České Republiky.  
 Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek. 
 
+
 ## 2. Popis primární a sekundární tabulky
 
 ### 2.1 Primární tabulka
