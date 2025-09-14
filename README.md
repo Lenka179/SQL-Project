@@ -1,9 +1,9 @@
 # SQL-Projekt
 
 Obsah
-[1. Popis projektu](https://github.com/Lenka179/SQL-Project/blob/main/README.md#1-popis-projektu)
+[1. Popis projektu](https://github.com/Lenka179/SQL-Project/blob/main/README.md#1-popis-projektu "Popis projektu")
 [2. Popis primární a sekundární tabulky](https://github.com/Lenka179/SQL-Project/blob/main/README.md#2-popis-prim%C3%A1rn%C3%AD-a-sekund%C3%A1rn%C3%AD-tabulky)
-[3. Odpovědi na otázky]()
+[3. Odpovědi na otázky](https://github.com/Lenka179/SQL-Project/blob/main/README.md#3-odpov%C4%9Bdi-na-ot%C3%A1zky)
 
 ## 1. Popis projektu 
 
