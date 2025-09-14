@@ -1,5 +1,10 @@
 # SQL-Projekt
 
+Obsah
+[1. Popis projektu]()
+[2. Popis primární a sekundární tabulky]()
+[3. Odpovědi na otázky]()
+
 ## 1. Popis projektu 
 
 Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti a zodpovědět několik konkrétních otázek týkajících se průměrných mezd a cen potravin v České Republice.  
@@ -115,7 +120,7 @@ FROM t_lenka_stankova_project_sql_secondary_final
 ```
 
 
-## 2. Odpovědi na otázky
+## 3. Odpovědi na otázky
 
 ## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
 
