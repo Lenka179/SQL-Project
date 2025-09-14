@@ -8,14 +8,14 @@ Obsah
 ## 1. Popis projektu 
 
 Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti a zodpovědět několik konkrétních otázek týkajících se průměrných mezd a cen potravin v České Republice.  
-Pro získání odpovědí byly vytvořeny dvě datové zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
+Pro získání odpovědí byly vytvořeny dvě datové zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek. 
 
 Výzkumné otázky:    
-[1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD)  
-[2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?](#2-kolik-je-mo%C5%BEn%C3%A9-si-koupit-litr%C5%AF-ml%C3%A9ka-a-kilogram%C5%AF-chleba-za-prvn%C3%AD-a-posledn%C3%AD-srovnateln%C3%A9-obdob%C3%AD-v-dostupn%C3%BDch-datech-cen-a-mezd)  
-[3. Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?](#3-kter%C3%A1-kategorie-potravin-zdra%C5%BEuje-nejpomaleji-je-u-n%C3%AD-nejni%C5%BE%C5%A1%C3%AD-percentu%C3%A1ln%C3%AD-meziro%C4%8Dn%C3%AD-n%C3%A1r%C5%AFst)  
-[4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?](#4-existuje-rok-ve-kter%C3%A9m-byl-meziro%C4%8Dn%C3%AD-n%C3%A1r%C5%AFst-cen-potravin-v%C3%BDrazn%C4%9B-vy%C5%A1%C5%A1%C3%AD-ne%C5%BE-r%C5%AFst-mezd-v%C4%9Bt%C5%A1%C3%AD-ne%C5%BE-10-)  
-[5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?](#5-m%C3%A1-v%C3%BD%C5%A1ka-hdp-vliv-na-zm%C4%9Bny-ve-mzd%C3%A1ch-a-cen%C3%A1ch-potravin-neboli-pokud-hdp-vzroste-v%C3%BDrazn%C4%9Bji-v-jednom-roce-projev%C3%AD-se-to-na-cen%C3%A1ch-potravin-%C4%8Di-mzd%C3%A1ch-ve-stejn%C3%A9m-nebo-n%C3%A1sleduj%C3%ADc%C3%ADm-roce-v%C3%BDrazn%C4%9Bj%C5%A1%C3%ADm-r%C5%AFstem)  
+[1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD "Růst mezd")  
+[2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?](#2-kolik-je-mo%C5%BEn%C3%A9-si-koupit-litr%C5%AF-ml%C3%A9ka-a-kilogram%C5%AF-chleba-za-prvn%C3%AD-a-posledn%C3%AD-srovnateln%C3%A9-obdob%C3%AD-v-dostupn%C3%BDch-datech-cen-a-mezd "Chléb a mléko")  
+[3. Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?](#3-kter%C3%A1-kategorie-potravin-zdra%C5%BEuje-nejpomaleji-je-u-n%C3%AD-nejni%C5%BE%C5%A1%C3%AD-percentu%C3%A1ln%C3%AD-meziro%C4%8Dn%C3%AD-n%C3%A1r%C5%AFst "Nejpomalejší zdražování")  
+[4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?](#4-existuje-rok-ve-kter%C3%A9m-byl-meziro%C4%8Dn%C3%AD-n%C3%A1r%C5%AFst-cen-potravin-v%C3%BDrazn%C4%9B-vy%C5%A1%C5%A1%C3%AD-ne%C5%BE-r%C5%AFst-mezd-v%C4%9Bt%C5%A1%C3%AD-ne%C5%BE-10- "Růst cen a mezd")  
+[5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?](#5-m%C3%A1-v%C3%BD%C5%A1ka-hdp-vliv-na-zm%C4%9Bny-ve-mzd%C3%A1ch-a-cen%C3%A1ch-potravin-neboli-pokud-hdp-vzroste-v%C3%BDrazn%C4%9Bji-v-jednom-roce-projev%C3%AD-se-to-na-cen%C3%A1ch-potravin-%C4%8Di-mzd%C3%A1ch-ve-stejn%C3%A9m-nebo-n%C3%A1sleduj%C3%ADc%C3%ADm-roce-v%C3%BDrazn%C4%9Bj%C5%A1%C3%ADm-r%C5%AFstem "Porovnání HDP cen a mezd")  
 
 ## 2. Popis primární a sekundární tabulky
 
@@ -78,6 +78,8 @@ FROM t_lenka_stankova_project_sql_primary_final
 
 ### Sekundární tabulka
 
+Pro sekundární tabulku jsou použita data o mzdách, cenách a ekonomice. Data v ní jsou již agregovaná pro potřeby získání celkových ročních průměrů za Českou Republiku. Ostatní státy jsou z dotazu vyloučeny, protože nejsou součástí výzkumných otázek a k ostatním státům nemáme dostupné údaje o průměrných mzdách a cenách potravin. 
+
 *Příkaz k vytvoření tabulky:*
 
 ```
@@ -124,7 +126,7 @@ FROM t_lenka_stankova_project_sql_secondary_final
 
 ## 1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
 
-- Ano, obecně lze říci, že průměrné platy ve všech odvětvích **rostou**.  
+- Ano, obecně lze říci, že průměrné mzdy ve všech odvětvích **rostou**.  
 - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
 - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako výraz poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
@@ -165,8 +167,8 @@ ORDER BY  industry_branch_code, payroll_year desc
 
 - V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50:50.  
 - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-- V roce 2006 jsme si mohli za průměrnou mzdu 20678,- Kč koupit 641 kg chleba a 716 litrů mléka.
-- V roce 2018 jsme si mohli za průměrnou mzdu 32486,- Kč koupit 670 kg chleba a 820 litrů mléka.
+- V roce **2006** jsme si mohli za průměrnou mzdu 20678,- Kč koupit **641 kg chleba a 716 litrů mléka**.
+- V roce **2018** jsme si mohli za průměrnou mzdu 32486,- Kč koupit **670 kg chleba a 820 litrů mléka**.
 
 ```
 SELECT
@@ -230,7 +232,8 @@ ORDER BY relative_growth_percent ASC
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 
 - Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006 - 2018, kdy máme dostupná data o mzdách i cenách.  
-- V žádném ze sledovaných období nebyl meziroční nárůst cen potravin výrazně vyšší než růst mezd. Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale tomtéž roce došlo také k nárůstu průměrných mezd o 6,31 %.
+- **V žádném ze sledovaných období nebyl meziroční nárůst cen potravin vyšší alespoň o 10 % oproti růstu mezd.**
+- Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale v tomtéž roce došlo také k nárůstu průměrných mezd o 6,31 %.
 
 ```
 SELECT 
@@ -250,7 +253,7 @@ ORDER BY price_percentage_change DESC
 
 ## 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Z výsledných dat je zřejmé, že výška HDP **neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou platů a cen.
+- Z výsledných dat je zřejmé, že **výška HDP neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou platů a cen.
 
 ```
 SELECT*,
@@ -272,3 +275,7 @@ CASE
 FROM t_lenka_stankova_project_sql_secondary_final
 ;
 ```
+
+---
+***Dokument vytvořila Lenka Staňková, září 2025.***
+
