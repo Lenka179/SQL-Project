@@ -1,9 +1,9 @@
-# SQL-Project
+# SQL-Projekt
 
-## 1. Popis projekut (Proč se to dělá?)
+## 1. Popis projektu 
 
 Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti a zodpovědět několik konkrétních otázek týkajících se průměrných mezd a cen potravin v České Republice.  
-Pro získání odpovědí byly vytvořeny dvě zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
+Pro získání odpovědí byly vytvořeny dvě datové zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro naše odpovědi. 
 
 Výzkumné otázky:    
 [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD)  
@@ -73,7 +73,47 @@ FROM t_lenka_stankova_project_sql_primary_final
 
 ### Sekundární tabulka
 
-TODO
+*Příkaz k vytvoření tabulky:*
+
+```
+CREATE TABLE t_lenka_stankova_project_sql_secondary_final (
+	YEAR INTEGER,
+	gdp NUMERIC,
+	overall_avg_payroll NUMERIC,
+	overall_avg_price NUMERIC)
+	;
+```
+
+*Příkaz k naplnění tabulky:*
+
+```
+INSERT INTO t_lenka_stankova_project_sql_secondary_final 
+SELECT
+	e.YEAR,
+	ROUND(avg(e.gdp)::NUMERIC, 0) AS GDP,
+	ROUND(avg(cp.value), 0) AS overall_avg_payroll,
+	ROUND(avg(cp2.value)::NUMERIC ,2) AS overall_avg_price
+FROM economies AS e 
+JOIN czechia_payroll AS cp 
+	ON e.YEAR = cp.payroll_year 
+JOIN czechia_price AS cp2 
+	ON e.YEAR = EXTRACT(YEAR FROM cp2.date_from)
+WHERE e.country = 'Czech Republic' 
+	AND e.YEAR > 1989
+	AND cp.value_type_code = 5958
+GROUP BY e.YEAR, cp.payroll_year 
+ORDER BY year DESC
+;
+```
+
+*Sekundární tabulka:*
+
+```
+SELECT*
+FROM t_lenka_stankova_project_sql_secondary_final
+;
+```
+
 
 ## 2. Odpovědi na otázky
 
@@ -178,7 +218,8 @@ SELECT
     END AS relative_growth_percent
 FROM price_diffs
 GROUP BY category_code, category_name
-ORDER BY relative_growth_percent ASC;
+ORDER BY relative_growth_percent ASC
+;
 ```
 
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
@@ -198,37 +239,17 @@ SELECT
 FROM t_lenka_stankova_project_sql_primary_final
 WHERE payroll_year BETWEEN 2006 AND 2018
 GROUP BY payroll_year
-ORDER BY price_percentage_change DESC;
+ORDER BY price_percentage_change DESC
+;
 ```
 
 ## 5. Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Výška HDP nemá vliv na mzdy a ceny potravin. 
-
+- Z výsledných dat je zřejmé, že výška HDP **neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou platů a cen.
 
 ```
-WITH gdp_data AS (
-  SELECT
-    e.YEAR,
-    ROUND(AVG(e.gdp)::NUMERIC, 0) AS GDP,
-    ROUND(AVG(cp.value), 0) AS overall_avg_payroll,
-    ROUND(AVG(cp2.value)::NUMERIC ,2) AS overall_avg_price
-  FROM economies AS e 
-  JOIN czechia_payroll AS cp 
-    ON e.YEAR = cp.payroll_year 
-  JOIN czechia_price AS cp2 
-    ON e.YEAR = EXTRACT(YEAR FROM cp2.date_from)
-  WHERE e.country = 'Czech Republic' 
-    AND e.YEAR > 1989
-    AND cp.value_type_code = 5958
-  GROUP BY e.YEAR
-)
-SELECT 
-  YEAR,
-  GDP,
-  overall_avg_payroll,
-  overall_avg_price,
-  CASE 
+SELECT*,
+CASE 
     WHEN GDP > LAG(GDP) OVER (ORDER BY YEAR) THEN 'increase'
     WHEN GDP < LAG(GDP) OVER (ORDER BY YEAR) THEN 'decrease'
     ELSE 'no change'
@@ -243,6 +264,6 @@ SELECT
     WHEN overall_avg_price < LAG(overall_avg_price) OVER (ORDER BY YEAR) THEN 'decrease'
     ELSE 'no change'
   END AS price_trend
-FROM gdp_data
-ORDER BY YEAR DESC;
+FROM t_lenka_stankova_project_sql_secondary_final
+;
 ```
