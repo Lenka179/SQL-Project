@@ -8,7 +8,7 @@ Obsah
 ## 1. Popis projektu 
 
 Cílem projektu je zjistit dostupnost základních potravin široké veřejnosti a zodpovědět několik konkrétních otázek týkajících se průměrných mezd a cen potravin v České Republice.  
-Pro získání odpovědí byly vytvořeny dvě datové zdrojové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek. 
+Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek. 
 
 Výzkumné otázky:    
 [1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?](#1-rostou-v-pr%C5%AFb%C4%9Bhu-let-mzdy-ve-v%C5%A1ech-odv%C4%9Btv%C3%ADch-nebo-v-n%C4%9Bkter%C3%BDch-klesaj%C3%AD "Růst mezd")  
@@ -22,7 +22,7 @@ Výzkumné otázky:
 ### Primární tabulka
 
 V primární tabulce jsou spojena data z přehledu o průměrných mzdách v jednotlivých odvětvích a průměrných cenách sledovaných komodit. Data v ní nám následně pomohou zodpovědět otázky 1 až 4.  
-Spojení tabulek o mzdách a cenách bylo provedeno přes LEFT JOIN, protože data o mzdách máme k dispozici od roku 2000 do roku 2021, ale data pro ceny potravin zahrnují pouze období 2006 až 2018.
+Spojení tabulek o mzdách a cenách bylo provedeno přes LEFT JOIN, protože data o mzdách máme k dispozici od roku 2000 do roku 2021, ale data pro ceny potravin zahrnují pouze období mezi lety 2006 až 2018.
 Zároveň jsou ve zdrojových datech informace o průměrných mzdách bez uvedení kategorie. Tyto hodnoty byly dodatečně označeny kategorií "UNCLASSIFIED".
 
 *Příkaz k vytvoření tabulky:*
@@ -128,7 +128,7 @@ FROM t_lenka_stankova_project_sql_secondary_final
 
 - Ano, obecně lze říci, že průměrné mzdy ve všech odvětvích **rostou**.  
 - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
-- Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako výraz poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
+- Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
 ```
 SELECT
@@ -165,10 +165,10 @@ ORDER BY  industry_branch_code, payroll_year desc
 
 ## 2. Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?  
 
-- V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50:50.  
+- V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50 : 50.  
 - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-- V roce **2006** jsme si mohli za průměrnou mzdu 20678,- Kč koupit **641 kg chleba a 716 litrů mléka**.
-- V roce **2018** jsme si mohli za průměrnou mzdu 32486,- Kč koupit **670 kg chleba a 820 litrů mléka**.
+- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **641 kilogramů chleba a 716 litrů mléka**.
+- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **670 kilogramů chleba a 820 litrů mléka**.
 
 ```
 SELECT
@@ -231,7 +231,7 @@ ORDER BY relative_growth_percent ASC
 
 ## 4. Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 
-- Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006 - 2018, kdy máme dostupná data o mzdách i cenách.  
+- Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006–2018, kdy máme dostupná data o mzdách i cenách.  
 - **V žádném ze sledovaných období nebyl meziroční nárůst cen potravin vyšší alespoň o 10 % oproti růstu mezd.**
 - Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale v tomtéž roce došlo také k nárůstu průměrných mezd o 6,31 %.
 
