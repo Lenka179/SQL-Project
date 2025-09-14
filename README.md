@@ -253,7 +253,7 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Z výsledných dat je zřejmé, že **výška HDP neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou mezd cen. Neporovnáváme zde jednotlivé komodity potravin ani mzdové kategorie. 
+- Z výsledných dat je zřejmé, že **výška HDP neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou mezd cen. Neporovnáváme zde jednotlivé komodity potravin ani mzdové odvětví. 
 
 ```
 SELECT*,
