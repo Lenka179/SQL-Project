@@ -87,8 +87,8 @@ CREATE TABLE t_lenka_stankova_project_sql_secondary_final (
 	YEAR INTEGER,
 	gdp NUMERIC,
 	overall_avg_payroll NUMERIC,
-	overall_avg_price NUMERIC)
-;
+	overall_avg_price NUMERIC
+);
 ```
 
 *Příkaz k naplnění tabulky:*
