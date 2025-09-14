@@ -1,7 +1,7 @@
 # SQL-Projekt
 
 Obsah
-[1. Popis projektu]()
+[1. Popis projektu](https://github.com/Lenka179/SQL-Project/blob/main/README.md#1-popis-projektu)
 [2. Popis primární a sekundární tabulky]()
 [3. Odpovědi na otázky]()
 
