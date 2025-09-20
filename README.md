@@ -156,74 +156,6 @@ FROM t_lenka_stankova_project_sql_secondary_final
 - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
 ```
-SELECT
-	tlsp.payroll_year,
-	tlsp.industry_branch_code,
-	tlsp.industry_branch_name,
-	avg(tlsp.average_payroll) AS average_payroll,
-	LAG(avg(tlsp.average_payroll)) OVER(
-		PARTITION BY tlsp.industry_branch_code
-		ORDER BY tlsp.payroll_year) AS previous_year_payroll,
-	CASE 
-		WHEN avg(tlsp.average_payroll) > LAG(avg(tlsp.average_payroll)) OVER (
-			PARTITION BY tlsp.industry_branch_code
-			ORDER BY tlsp.payroll_year) THEN 'higher'
-		WHEN avg(tlsp.average_payroll) < LAG(avg(tlsp.average_payroll)) OVER (
-			PARTITION BY tlsp.industry_branch_code
-			ORDER BY tlsp.payroll_year) THEN 'lower'
-		WHEN LAG(avg(tlsp.average_payroll)) OVER ( 
-			PARTITION BY tlsp.industry_branch_code
-			ORDER BY tlsp.payroll_year) IS NULL THEN 'null'
-		ELSE 'equal'
-	END AS payroll_trend,
-	avg(tlsp.average_payroll) - 
-		LAG(avg(tlsp.average_payroll)) OVER (
-			PARTITION BY tlsp.industry_branch_code 
-			ORDER BY tlsp.payroll_year) AS payroll_difference 
-FROM t_lenka_stankova_project_sql_primary_final AS tlsp
-GROUP BY tlsp.payroll_year,
-	tlsp.industry_branch_code,
-	tlsp.industry_branch_name
-ORDER BY  industry_branch_code, payroll_year desc
-;
-```
-
-## 3.2 Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?  
-
-- V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50 : 50.  
-- Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **641 kilogramů chleba a 716 litrů mléka**.
-- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **670 kilogramů chleba a 820 litrů mléka**.
-
-```
-SELECT
-	payroll_year,
-	category_name,
-	price_unit,
-	round(avg(average_payroll) / 2 ,0) AS total_average_payroll,
-	avg(average_price) AS total_average_price,
-	round((avg(average_payroll) / 2) / avg(average_price),0) AS count_commodity_per_payroll
-FROM t_lenka_stankova_project_sql_primary_final AS tlsp
-WHERE average_payroll IS NOT NULL 
-	AND average_price IS NOT NULL
-	AND category_code IN ('114201','111301')
-	AND payroll_year IN ('2006','2018')
-GROUP BY payroll_year,
-	category_name,
-	price_unit,
-	price_value
-ORDER BY payroll_year
-;
-```
-
-## 3.3 Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
-
-- Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
-- Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
-- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **0,56 %**.
-- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (-2,73 resp. -2,43 %).
-
-```
 WITH prev_average_payroll AS ( 
 	SELECT 	
 		payroll_year,
@@ -281,8 +213,76 @@ SELECT
 FROM payroll_comparison AS pc 
 LEFT JOIN payroll_sum AS ps
 	ON  pc.industry_branch_code = ps.industry_branch_code			
-ORDER BY overall_payroll_trend DESC , industry_branch_code, payroll_year DESC
-;       
+ORDER BY 
+	overall_payroll_trend, 
+	industry_branch_code, 
+	payroll_year DESC
+;
+```
+
+## 3.2 Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období v dostupných datech cen a mezd?  
+
+- V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50 : 50.  
+- Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
+- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **641 kilogramů chleba a 716 litrů mléka**.
+- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **670 kilogramů chleba a 820 litrů mléka**.
+
+```
+SELECT 
+	payroll_year,
+	category_name,
+	price_unit,
+	round(avg(average_payroll) / 2, 0) AS total_average_payroll,
+	round((avg(average_payroll) / 2) / avg(average_price), 0) AS count_comodity_per_payroll
+FROM t_lenka_stankova_project_sql_primary_final
+WHERE average_payroll  IS NOT NULL 
+	AND average_price  IS NOT NULL 
+	AND category_code IN ('114201','111301')
+	AND payroll_year IN ('2006','2018')
+GROUP BY payroll_year,
+	category_name,
+	price_unit,
+	price_value 
+ORDER BY payroll_year 
+;
+```
+
+## 3.3 Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)?
+
+- Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
+- Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
+- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **0,56 %**.
+- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (-2,73 resp. -2,43 %).
+
+```
+WITH price_diffs AS (
+    SELECT 
+        tlsp.category_code,
+        tlsp.category_name,
+        tlsp.payroll_year,
+        AVG(tlsp.average_price) AS avg_price,
+        LAG(AVG(tlsp.average_price)) OVER (
+            PARTITION BY tlsp.category_code 
+            ORDER BY tlsp.payroll_year
+        ) AS previous_avg_price
+    FROM t_lenka_stankova_project_sql_primary_final AS tlsp
+    WHERE tlsp.category_name IS NOT NULL
+    GROUP BY tlsp.category_code, tlsp.category_name, tlsp.payroll_year
+)
+SELECT 
+    category_code,
+    category_name,
+    round(AVG(avg_price),2) AS overall_avg_price,
+    round(AVG(avg_price - previous_avg_price),2) AS avg_price_change,
+    CASE 
+        WHEN AVG(avg_price) != 0 THEN 
+            round(AVG(avg_price - previous_avg_price) / AVG(avg_price) * 100 , 2)
+        ELSE NULL
+    END AS relative_growth_percent
+FROM price_diffs
+GROUP BY category_code, category_name
+ORDER BY relative_growth_percent ASC
+;  
 ```
 
 ## 3.4 Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
