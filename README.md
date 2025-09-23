@@ -356,7 +356,7 @@ ORDER BY price_percentage_change DESC
 
 - Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Pokud však použijeme analytický nástroj  ***Pearsonovu korelaci***, zjistíme, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,92). To naznačuje, že růst HDP je spojen s růstem mezd.  
 - Podobně i korelace mezi **HDP a průměrnými cenami** (0,89) potravin ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.
-- Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) — roli zde mohou hrát i další faktrory.
+- Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) - roli zde mohou hrát i další faktrory.
   
   	> **Pearsonova korelace** měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě. Hodnota korelačního koeficientu leží v intervalu -1 do 1. Krajní hodnoty blízké -1 nebo 1 značí silnou lineární korelaci, zatímco hodnoty blízké nule poukazují na velmi slabou nebo žádnou lineární závislost. Obecně lze korelaci interpretovat následovně:
   > 
