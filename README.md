@@ -238,15 +238,22 @@ WITH prev_average_payroll AS (
 		GROUP BY cp.industry_branch_code
 )
 SELECT
-	pc.*,
+	pc.payroll_year,
+	pc.industry_branch_code,
+	pc.branch_name,
+	pc.current_avg_payroll,
+	pc.previous_avg_payroll,
+	pc.payroll_diff,
+	pc.annual_payroll_trend,
 	ps.overall_payroll_trend
 FROM payroll_comparison AS pc 
 LEFT JOIN payroll_sum AS ps
 	ON  pc.industry_branch_code = ps.industry_branch_code			
 ORDER BY 
-	overall_payroll_trend, 
-	industry_branch_code, 
-	payroll_year
+	ps.overall_payroll_trend, 
+	pc.industry_branch_code, 
+	pc.payroll_year,
+	pc.payroll_diff
 ;
 ```
 
