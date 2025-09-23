@@ -82,9 +82,10 @@ LEFT JOIN czechia_payroll_industry_branch AS cpib
 
 ### 2.2 Sekundární tabulka
 
-Sekundární tabuka spojuje cenové a mzdové agregace podle kalendářního roku s makroekonomickými ukazateli. Slouží jako datový zdroj pro zodpovězení poslední výzkumné otázky.
-Jako dodatečný materiál pro další výzkum byla v tabulce ponechána ostatní ekonomická data (GINI ukazatel, populace apod.). Zároveň byla data agregována jen v minimální nutné míře, aby s nimi mohlo být případně dále manipulováno dle dalších potřeb.  
-Pro vytvoření sekundární tabulky byl použit INNER JOIN mezi hlavními tabulkami, abychom získali pouze data za stejné období jako primární přehled za ČR.  
+Sekundární tabuka propojuje agregované údaje o cenách a mzdách podle kalendářního roku s některými makroekonomickými ukazateli. Slouží jako datový základ pro zodpovězení závěrečné výzkumné otázky.  
+Pro účely případného rozšíření analýzy byla v tabulce ponechána i další ekonomická data (např. GINI ukazatel, populace apod.)  
+Agregace byla provedena pouze v nezbytném rozsahu, aby byla zachována možnost další manipulace s daty dle specifického zadání. 
+Tabulka byla vytvořena pomocí operace INNER JOIN mezi hlavními datovými zdroji, abychom zachovali pouze data za stejné období jako primární přehled za Českou Republiku.  
 
 *Příkaz k vytvoření tabulky:*
 
