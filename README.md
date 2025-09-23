@@ -15,7 +15,9 @@ Obsah
 ## 1. Popis projektu 
 
 Cílem projektu je zjistit dostupnost základních potravin pro širokou veřejnost. K dosažení cíle bylo stanoveno 5 výzkumných otázek týkajících se průměrných mezd, cen potravin a ekonomiky České Republiky.  
-Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek. 
+Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primární a seknudární), ze kterých budeme čerpat konečná data pro zodpovězení otázek.  
+Jako dodatečný materiál pro případný další výzkum byly v sekundární tabulce ponechány makroekonomické informace o dalších evropských státech ve stejném období jako primární přehled pro Českou Republiku.
+
 
 
 ## 2. Popis primární a sekundární tabulky
@@ -161,6 +163,17 @@ INNER JOIN price_prepared AS pp
 	ON e.YEAR = pp.price_year  
 INNER JOIN payroll_prepared AS pp2 
 	ON e.YEAR = pp2.payroll_year
+WHERE country IN (
+  'Albania', 'Andorra', 'Armenia', 'Austria', 'Belarus', 'Belgium',
+  'Bosnia and Herzegovina', 'Bulgaria', 'Channel Islands', 'Croatia',
+  'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Faroe Islands',
+  'Finland', 'France', 'Georgia', 'Germany', 'Gibraltar', 'Greece',
+  'Hungary', 'Iceland', 'Ireland', 'Italy', 'Kosovo', 'Latvia',
+  'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova',
+  'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway',
+  'Poland', 'Portugal', 'Romania', 'San Marino', 'Serbia', 'Slovakia',
+  'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Ukraine', 'United Kingdom'
+)
 ;
 ```
 
