@@ -246,7 +246,7 @@ LEFT JOIN payroll_sum AS ps
 ORDER BY 
 	overall_payroll_trend, 
 	industry_branch_code, 
-	payroll_year DESC
+	payroll_year
 ;
 ```
 
