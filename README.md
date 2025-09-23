@@ -25,7 +25,7 @@ Jako dodatečný materiál pro případný další výzkum byly v sekundární t
 ### 2.1 Primární tabulka
 
 Primární tabulka ***t_lenka_stankova_project_sql_primary_final*** vznikla spojením tabulky o průměrných mzdách s tabulkou průměrných cen potravin. Finální tabulka byla také následně propojena s dimenzionálními tabulkami, které s ní souvisí. Data v ní nám následně pomohou zodpovědět otázky 1 až 4.  
-Aby nedošlo ke ztrátě dat na žádné straně spojení mezi hlavními zdrojovými tabulkami, zvolila jsem FULL OUTER JOIN. Data o mzdách máme totiž k dispozici od roku 2000 do 2021, ale data o cenách potravin pouze mezi roky 2006 a 2018.
+Aby nedošlo ke ztrátě dat na žádné straně spojení mezi hlavními datovými zdroji, zvolila jsem FULL OUTER JOIN. Data o mzdách máme totiž k dispozici od roku 2000 do 2021, ale data o cenách potravin pouze mezi roky 2006 a 2018.
 
 *Příkaz k vytvoření tabulky:*
 ```
