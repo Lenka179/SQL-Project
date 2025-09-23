@@ -182,10 +182,11 @@ WHERE country IN (
 
 - Ano, obecně lze říci, že průměrné mzdy ve všech odvětvích **rostou**.
 - Přičemž odvětví ***Ubytování, stravování a pohostinství*** eviduje nejnižší průměrný celkový mzdový nárůst a naopak nejvyšší celkový mzdový nárůst za sledované období vidíme v oblasti ***Informační a komunikační činnosti***.
-- Změníme-li pořadí řazení v dotazu, získáme další informace:  
-	> Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.  
-	> Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
-
+  
+	> Změníme-li pořadí řazení v dotazu, získáme další zajímavé informace: 
+	> + Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.  
+	> + Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
+ 
 ```
 WITH prev_average_payroll AS ( 
 	SELECT 	
