@@ -22,61 +22,45 @@ Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primá
 
 ### 2.1 Primární tabulka
 
-V primární tabulce jsou spojena data z přehledu o průměrných mzdách v jednotlivých odvětvích a průměrných cenách sledovaných komodit. Data v ní nám následně pomohou zodpovědět otázky 1 až 4.  
-Ze zdrojových tabulek byly do nové přeneseny i sloupce s primárními a cizími klíči. Tím se sice primární tabulka mnohonásobně zvětšila, ale byla zachována základní datová integrita pro lepší správu schématu.  
-Operace s daty (agregace) provádím až později v dotazech pomocí kterých hledám odpovědi na výzkumné otázky.  
-Aby nedošlo ke ztrátě dat na žádné straně spojení mezi hlavními tabulkami, zvolila jsem FULL OUTER JOIN. Data o mzdách máme totiž k dispozici od roku 2000 do 2021, ale data o cenách potravin pouze mezi roky 2006 a 2021.
+Primární tabulka ***t_lenka_stankova_project_sql_primary_final*** vznikla spojením tabulky o průměrných mzdách s tabulkou průměrných cen potravin. Finální tabulka byla také následně propojena s dimenzionálními tabulkami, které s ní souvisí. Data v ní nám následně pomohou zodpovědět otázky 1 až 4.  
+Aby nedošlo ke ztrátě dat na žádné straně spojení mezi hlavními zdrojovými tabulkami, zvolila jsem FULL OUTER JOIN. Data o mzdách máme totiž k dispozici od roku 2000 do 2021, ale data o cenách potravin pouze mezi roky 2006 a 2021.
 
 *Příkaz k vytvoření tabulky:*
 ```
-CREATE TABLE t_lenka_stankova_project_sql_primary_final ( 
-	payroll_id INTEGER,
-	payroll_year INTEGER,
-	unit_code INTEGER,
-	calculation_code INTEGER,
-	industry_branch_code CHAR(1),
-	average_payroll NUMERIC,
-	price_id INTEGER,
-	category_code INTEGER,
-	region_code CHAR(5),
-	average_price NUMERIC,
-	price_unit VARCHAR(2),
-	category_name TEXT,
-	price_value NUMERIC,
-	branch_name TEXT
-);
-```
-*Příkaz k naplnění tabulky:*
-```
-INSERT INTO t_lenka_stankova_project_sql_primary_final 
+CREATE TABLE  t_lenka_stankova_project_sql_primary_final AS 
 WITH cp_prepared AS ( 
 	SELECT 
-		id,
 		payroll_year,
 		unit_code,
 		calculation_code,
 		industry_branch_code,
-		value AS average_payroll
+		avg(value) AS average_payroll
 	FROM czechia_payroll
 	WHERE value_type_code = 5958
+	GROUP BY
+		payroll_year,
+		unit_code,
+		calculation_code,
+		industry_branch_code
 ),
 	cp2_prepared AS (
 	SELECT 
-		id,
+		date_part('YEAR', date_from) AS year,
 		category_code,
 		region_code,
-		date_part('YEAR', date_from) AS year,
-		value AS average_price
+		avg(value) AS average_price
 	FROM czechia_price
+	GROUP BY 		
+		date_part('YEAR', date_from),
+		category_code,
+		region_code
 )	
 SELECT 
-	cp.id AS payroll_id,
     cp.payroll_year,
     cp.unit_code,
     cp.calculation_code,
     cp.industry_branch_code,
     cp.average_payroll,
-    cp2.id AS price_id,
     cp2.category_code AS category_code,
     cp2.region_code,
     cp2.average_price,
@@ -93,65 +77,99 @@ LEFT JOIN czechia_payroll_industry_branch AS cpib
     ON cp.industry_branch_code = cpib.code 
 ;
 ```
-*Primární tabulka:*
-```
-SELECT*
-FROM t_lenka_stankova_project_sql_primary_final
-;
-```
 
 ### 2.2 Sekundární tabulka
 
-Pro sekundární tabulku jsou použita data o mzdách, cenách a ekonomice. Data v ní jsou již agregovaná pro potřeby získání celkových ročních průměrů za Českou Republiku. Ostatní státy jsou z dotazu vyloučeny, protože nejsou součástí výzkumných otázek a k ostatním státům nemáme dostupné údaje o průměrných mzdách a cenách potravin. 
+Sekundární tabuka spojuje cenové a mzdové agregace podle kalendářního roku s makroekonomickými ukazateli. Slouží jako datový zdroj pro zodpovězení poslední výzkumné otázky.
+Jako dodatečný materiál pro další výzkum byla v tabulce ponechána ostatní ekonomická data (GINI ukazatel, populace apod.). Zároveň byla data agregována jen v minimální nutné míře, aby s nimi mohlo být případně dále manipulováno dle dalších potřeb.  
+Pro vytvoření sekundární tabulky byl použit INNER JOIN mezi hlavními tabulkami, abychom získali pouze data za stejné období jako primární přehled za ČR.  
 
 *Příkaz k vytvoření tabulky:*
 
 ```
-CREATE TABLE t_lenka_stankova_project_sql_secondary_final (
-	YEAR INTEGER,
-	gdp NUMERIC,
-	overall_avg_payroll NUMERIC,
-	overall_avg_price NUMERIC
-);
-```
-
-*Příkaz k naplnění tabulky:*
-
-```
-INSERT INTO t_lenka_stankova_project_sql_secondary_final 
+CREATE TABLE t_lenka_stankova_project_sql_secondary_final AS 
+WITH price_prepared AS ( 
+	SELECT
+		category_code,
+		date_part('YEAR', date_from) AS price_year,
+		avg(value) AS average_price,
+		cpc2.name AS category_name
+	FROM czechia_price
+	LEFT JOIN czechia_price_category AS cpc2 
+		ON category_code = cpc2.code
+	GROUP BY 
+		category_code,
+		date_part('YEAR', date_from),
+		cpc2.name
+),
+payroll_prepared AS ( 
+	SELECT
+		cp.value_type_code,
+		cp.unit_code,
+		cp.calculation_code,
+		cp.industry_branch_code,
+		cp.payroll_year,
+		cpib.name AS industry_name,
+		cpu.name AS unit_name,
+		cpvt.name AS value_type_name,
+		cpc.name AS calculation_name,
+		avg(cp.value) AS average_payroll
+	FROM czechia_payroll AS cp
+	LEFT JOIN czechia_payroll_unit AS cpu
+		ON unit_code = cpu.code
+	LEFT JOIN czechia_payroll_value_type AS cpvt 
+		ON cp.value_type_code = cpvt.code 
+	LEFT JOIN czechia_payroll_calculation AS cpc 
+		ON cp.calculation_code = cpc.code 
+	LEFT JOIN czechia_payroll_industry_branch AS cpib 
+		ON cp.industry_branch_code = cpib.code 
+	WHERE value_type_code = '5958'
+	GROUP BY 
+		value_type_code,
+		unit_code,
+		calculation_code,
+		industry_branch_code,
+		payroll_year,
+		industry_name,
+		unit_name,
+		value_type_name,
+		calculation_name
+	)
 SELECT
+	pp.category_code,
+	pp.average_price,
+	pp.category_name,
+	pp2.value_type_code,
+	pp2.unit_code,
+	pp2.calculation_code,
+	pp2.industry_branch_code,
+	pp2.average_payroll,
+	pp2.unit_name,
+	pp2.industry_name,
+	pp2.value_type_name,
+	pp2.calculation_name,
+	e.country,
 	e.YEAR,
-	ROUND(avg(e.gdp)::NUMERIC, 0) AS GDP,
-	ROUND(avg(cp.value), 0) AS overall_avg_payroll,
-	ROUND(avg(cp2.value)::NUMERIC ,2) AS overall_avg_price
-FROM economies AS e 
-JOIN czechia_payroll AS cp 
-	ON e.YEAR = cp.payroll_year 
-JOIN czechia_price AS cp2 
-	ON e.YEAR = EXTRACT(YEAR FROM cp2.date_from)
-WHERE e.country = 'Czech Republic' 
-	AND e.YEAR > 1989
-	AND cp.value_type_code = 5958
-GROUP BY e.YEAR, cp.payroll_year 
-ORDER BY year DESC
+	e.gdp,
+	e.population,
+	e.gini,
+	e.taxes,
+	e.fertility,
+	e.mortaliy_under5 AS mortality_under5
+	FROM economies AS e
+INNER JOIN price_prepared AS pp
+	ON e.YEAR = pp.price_year  
+INNER JOIN payroll_prepared AS pp2 
+	ON e.YEAR = pp2.payroll_year
 ;
 ```
-
-*Sekundární tabulka:*
-
-```
-SELECT*
-FROM t_lenka_stankova_project_sql_secondary_final
-;
-```
-
 
 ## 3. Odpovědi na otázky
 
 ## 3.1 Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?  
 
 - Ano, obecně lze říci, že průměrné mzdy ve všech odvětvích **rostou**.
-- Přičemž odvětví ***Ubytování, stravování a pohostinství*** eviduje nejnižší průměrný mzdový nárůst a naopak nejvyšší mzdový nárůst za sledované období vidíme v oblasti ***Informační a komunikační činnosti***.  
+- Přičemž odvětví ***Ubytování, stravování a pohostinství*** eviduje nejnižší průměrný celkový mzdový nárůst a naopak nejvyšší celkový mzdový nárůst za sledované období vidíme v oblasti ***Informační a komunikační činnosti***.  
 - Za výjimku bychom mohli považovat rok 2013, kdy v 11 z 19 sledovaných odvětví mzdy klesly. Největší meziroční propad průměrné mzdy zasáhl oblast Peněžnicvtí a pojišťovnictví. Příčinou by mohla být ekonomická recese ČR, která souvisela s dluhovou krizí v eurozóně a vládními úspornými opatřeními.
 - Naopak nejvýraznější meziroční nárůst mezd byl zaznamenán v roce 2021 v sektoru Zdravotní a sociální péče. Tento skokový nárůst lze vysvětlit mimořádnými odměnami, které vláda ČR schválila jako poděkování lékařům a zdravotnickému personálu za jejich péči o pacienty s onemocněním Covid-19.
 
@@ -167,16 +185,16 @@ WITH prev_average_payroll AS (
 		industry_branch_code
 ),
 	current_payroll AS ( 
-	SELECT 
-		payroll_year,
-		industry_branch_code,
-		branch_name,
-		avg(average_payroll) AS current_avg_payroll
-	FROM t_lenka_stankova_project_sql_primary_final
-	GROUP BY 
-		payroll_year,
-		industry_branch_code,
-		branch_name
+		SELECT 
+			payroll_year,
+			industry_branch_code,
+			branch_name,
+			avg(average_payroll) AS current_avg_payroll
+		FROM t_lenka_stankova_project_sql_primary_final
+		GROUP BY 
+			payroll_year,
+			industry_branch_code,
+			branch_name
 ),
 	payroll_comparison AS ( 
 		SELECT 
@@ -233,13 +251,14 @@ SELECT
 	category_name,
 	price_unit,
 	round(avg(average_payroll) / 2, 0) AS total_average_payroll,
-	round((avg(average_payroll) / 2) / avg(average_price), 0) AS count_comodity_per_payroll
+	round((avg(average_payroll) / 2) / avg(average_price)::NUMERIC, 0) AS count_comodity_per_payroll
 FROM t_lenka_stankova_project_sql_primary_final
 WHERE average_payroll  IS NOT NULL 
 	AND average_price  IS NOT NULL 
 	AND category_code IN ('114201','111301')
 	AND payroll_year IN ('2006','2018')
-GROUP BY payroll_year,
+GROUP BY
+	payroll_year,
 	category_name,
 	price_unit,
 	price_value 
@@ -260,29 +279,34 @@ WITH price_diffs AS (
         tlsp.category_code,
         tlsp.category_name,
         tlsp.payroll_year,
-        AVG(tlsp.average_price) AS avg_price,
-        LAG(AVG(tlsp.average_price)) OVER (
+        avg(tlsp.average_price) AS avg_price,
+        LAG(avg(tlsp.average_price)) OVER (
             PARTITION BY tlsp.category_code 
             ORDER BY tlsp.payroll_year
         ) AS previous_avg_price
     FROM t_lenka_stankova_project_sql_primary_final AS tlsp
     WHERE tlsp.category_name IS NOT NULL
-    GROUP BY tlsp.category_code, tlsp.category_name, tlsp.payroll_year
+    GROUP BY
+		tlsp.category_code,
+		tlsp.category_name,
+		tlsp.payroll_year
 )
 SELECT 
     category_code,
     category_name,
-    round(AVG(avg_price),2) AS overall_avg_price,
-    round(AVG(avg_price - previous_avg_price),2) AS avg_price_change,
+    round(avg(avg_price)::NUMERIC, 2) AS overall_avg_price,
+    round(avg(avg_price - previous_avg_price)::NUMERIC, 2) AS avg_price_change,
     CASE 
-        WHEN AVG(avg_price) != 0 THEN 
-            round(AVG(avg_price - previous_avg_price) / AVG(avg_price) * 100 , 2)
+        WHEN avg(avg_price) != 0 THEN 
+            round((avg(avg_price - previous_avg_price)::NUMERIC) / avg(avg_price::NUMERIC) * 100, 2)
         ELSE NULL
     END AS relative_growth_percent
 FROM price_diffs
-GROUP BY category_code, category_name
+GROUP BY
+	category_code,
+	category_name
 ORDER BY relative_growth_percent ASC
-;  
+; 
 ```
 
 ## 3.4 Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
@@ -294,12 +318,12 @@ ORDER BY relative_growth_percent ASC
 ```
 SELECT 
 	payroll_year,
-    ROUND((AVG(average_price) - 
-           LAG(AVG(average_price)) OVER (ORDER BY payroll_year)) / 
-           NULLIF(LAG(AVG(average_price)) OVER (ORDER BY payroll_year), 0) * 100, 2) AS price_percentage_change,
-    ROUND((AVG(average_payroll) - 
-           LAG(AVG(average_payroll)) OVER (ORDER BY payroll_year)) / 
-           NULLIF(LAG(AVG(average_payroll)) OVER (ORDER BY payroll_year), 0) * 100, 2) AS payroll_percentage_change
+    round(((avg(average_price) - 
+           LAG(avg(average_price)) OVER (ORDER BY payroll_year)) / 
+           NULLIF(LAG(avg(average_price)) OVER (ORDER BY payroll_year), 0) * 100) ::NUMERIC, 2) AS price_percentage_change,
+    round((avg(average_payroll) - 
+           LAG(avg(average_payroll)) OVER (ORDER BY payroll_year)) / 
+           NULLIF(LAG(avg(average_payroll)) OVER (ORDER BY payroll_year), 0) * 100, 2) AS payroll_percentage_change
 FROM t_lenka_stankova_project_sql_primary_final
 WHERE payroll_year BETWEEN 2006 AND 2018
 GROUP BY payroll_year
@@ -309,27 +333,31 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Z výsledných dat je zřejmé, že **výška HDP neovlivňuje výši mezd ani cen potravin**. Toto tvrzení je platné pro obecný pohled na data. To znamená porovnáváme-li HDP s celkovou průměrnou hodnotou mezd cen. Neporovnáváme zde jednotlivé komodity potravin ani mzdové odvětví. 
+- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Pokud však použijeme analytický nástroj — ***Pearsonovu korelaci***, která měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě — zjistíme, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,92). To naznačuje, že růst HDP je spojen s růstem mezd. Podobně i korelace mezi **HDP a průměrnými cenami** (0,89) potravin ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.  Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) — roli zde mohou hrát i další faktrory.
+  	> Pearsonova korelace měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě. Leží v intervalu -1 do 1, kdy krajní hodnoty blízko -1 a 1 udávají silnou ineární korelaci. Hodnoty blízké nule poukazují na velmi nízkou lineární nebo žádnou korelaci. Obecně lze korelaci interpretovat takto:
+   > 0,00 až ±0,19 velmi slabá  
+   > 0,20 až ±0,39 slabá  
+   > 0,40 až ±0,59 střední  
+   > 0,60 až ±0,79 silná  
+   > 0,80 až ±1,00 velmi silná  
+
 
 ```
-SELECT*,
-CASE 
-    WHEN GDP > LAG(GDP) OVER (ORDER BY YEAR) THEN 'increase'
-    WHEN GDP < LAG(GDP) OVER (ORDER BY YEAR) THEN 'decrease'
-    ELSE 'no change'
-  END AS gdp_trend,
-    CASE 
-    WHEN overall_avg_payroll > LAG(overall_avg_payroll) OVER (ORDER BY YEAR) THEN 'increase'
-    WHEN overall_avg_payroll < LAG(overall_avg_payroll) OVER (ORDER BY YEAR) THEN 'decrease'
-    ELSE 'no change'
-  END AS payroll_trend,
-      CASE 
-    WHEN overall_avg_price > LAG(overall_avg_price) OVER (ORDER BY YEAR) THEN 'increase'
-    WHEN overall_avg_price < LAG(overall_avg_price) OVER (ORDER BY YEAR) THEN 'decrease'
-    ELSE 'no change'
-  END AS price_trend
-FROM t_lenka_stankova_project_sql_secondary_final
-;
+WITH averaged_data AS (
+  SELECT
+    YEAR,
+    country,
+    avg(average_price) AS overall_avg_price,
+    avg(average_payroll) AS overall_avg_payroll,
+    avg(gdp) AS gdp
+  FROM t_lenka_stankova_project_sql_secondary_final
+  WHERE country = 'Czech Republic'
+  GROUP BY YEAR, country
+)
+SELECT
+  round(corr(gdp, overall_avg_price)::NUMERIC, 2) AS corr_gdp_price,
+  round(corr(gdp, overall_avg_payroll)::NUMERIC, 2) AS corr_gdp_payroll
+FROM averaged_data;
 ```
 
 ---
