@@ -19,7 +19,6 @@ Pro získání odpovědí byly vytvořeny dvě zdrojové datové tabulky (primá
 Jako dodatečný materiál pro případný další výzkum byly v sekundární tabulce ponechány makroekonomické informace o dalších evropských státech ve stejném období jako primární přehled pro Českou Republiku.
 
 
-
 ## 2. Popis primární a sekundární tabulky
 
 ### 2.1 Primární tabulka
@@ -88,7 +87,6 @@ Agregace byla provedena pouze v nezbytném rozsahu, aby byla zachována možnost
 Tabulka byla vytvořena pomocí operace INNER JOIN mezi hlavními datovými zdroji, abychom zachovali pouze data za stejné období jako primární přehled za Českou Republiku.  
 
 *Příkaz k vytvoření tabulky:*
-
 ```
 CREATE TABLE t_lenka_stankova_project_sql_secondary_final AS 
 WITH price_prepared AS ( 
@@ -347,7 +345,9 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Pokud však použijeme analytický nástroj  ***Pearsonovu korelaci***, zjistíme, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,92). To naznačuje, že růst HDP je spojen s růstem mezd. Podobně i korelace mezi **HDP a průměrnými cenami** (0,89) potravin ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.  Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) — roli zde mohou hrát i další faktrory.
+- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Pokud však použijeme analytický nástroj  ***Pearsonovu korelaci***, zjistíme, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,92). To naznačuje, že růst HDP je spojen s růstem mezd.  
+- Podobně i korelace mezi **HDP a průměrnými cenami** (0,89) potravin ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.
+- Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) — roli zde mohou hrát i další faktrory.
   
   	> **Pearsonova korelace** měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě. Hodnota korelačního koeficientu leží v intervalu -1 do 1. Krajní hodnoty blízké -1 nebo 1 značí silnou lineární korelaci, zatímco hodnoty blízké nule poukazují na velmi slabou nebo žádnou lineární závislost. Obecně lze korelaci interpretovat následovně:
   > 
@@ -356,7 +356,6 @@ ORDER BY price_percentage_change DESC
   > + ±0,40 - ±0,59 střední  
   > + ±0,60 - ±0,79 silná  
   > + ±0,80 - ±1,00 velmi silná  
-
 
 ```
 WITH averaged_data AS (
