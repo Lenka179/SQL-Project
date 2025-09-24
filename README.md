@@ -420,8 +420,8 @@ lagged AS (
 ),
 regression AS ( 
 	SELECT 
-		round(REGR_SLOPE(avg_payroll, avg_gdp / 1000000000)::NUMERIC ,2) AS reg_payroll_vs_gdp,
-		round(REGR_SLOPE(avg_price, avg_gdp / 1000000000)::NUMERIC ,2) AS reg_price_vs_gdp,
+		round(REGR_SLOPE(avg_payroll, avg_gdp / 1000000000)::NUMERIC, 2) AS reg_payroll_vs_gdp,
+		round(REGR_SLOPE(avg_price, avg_gdp / 1000000000)::NUMERIC, 2) AS reg_price_vs_gdp,
 		round(CORR(avg_payroll, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_payroll_vs_gdp,
 		round(CORR(avg_price, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_price_vs_gdp
 FROM agregated 
