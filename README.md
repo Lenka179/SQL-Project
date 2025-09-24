@@ -354,9 +354,20 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Pokud však použijeme analytický nástroj  ***Pearsonovu korelaci***, zjistíme, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,92). To naznačuje, že růst HDP je spojen s růstem mezd.  
-- Podobně i korelace mezi **HDP a průměrnými cenami** (0,89) potravin ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.
+- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.  
+- Zvolila jsem dvě analytické metody. ***Pearsonovu korelaci*** a ***regresi*** včetně jejich ***lagovaných variant***.
+- ***Pearsonova korelace*** ukazuje, zda mezi HDP a cenami potravin či mzdami existuje nějaký statisticky významný vztah.
+- ***Lineární regrese*** je analytická metoda, která nám ukazuje lineární závislost mezi dvěma hodnotami. V našem případě výše HDP vůči mzdám/cenám potravin.
+- Pro lepší čitelnost výsledků analýzy jsem HDP přepočítala na miliardy.
+- ***Lagovaná regrese*** ukáže, zda se vliv HDP projeví s časovým zpožděním (jak HDP v jednom roce ovlivňuje ceny a mzdy v roce následujícím). HDP je i v tomto případě přepočítáno na miliardy.  
+-
+	+ ***Pearsonova korelace***, ukazuje, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,84). To naznačuje, že růst HDP je spojen s růstem mezd.  
+- Podobně i korelace mezi **HDP a průměrnými cenami potravin** (0,89) ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.
+  	+ Stejně tak ***lagovaná korelace*** signalizuje, že **meziročně HDP má vliv na mzdy (0,85) a ceny potravin (0,83)**. 
 - Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) - roli zde mohou hrát i další faktrory.
+
+  	+ ***Lineární regrese*** ukazuje, že pokud se zvýší HDP o miliardu, průměrná mzdy vzrostou o 129,92 Kč a průměrná ceny o 0,24 Kč.
+  	+ ***Lagovaná regrese*** ukazuje, že výše HDP v jednom roce ovlivní průměrnou mzdu v následujícím roce o 138,29 Kč a průměrnou cenu potravin o 0,24 Kč. 
   
   	> **Pearsonova korelace** měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě. Hodnota korelačního koeficientu leží v intervalu -1 do 1. Krajní hodnoty blízké -1 nebo 1 značí silnou lineární korelaci, zatímco hodnoty blízké nule poukazují na velmi slabou nebo žádnou lineární závislost. Obecně lze korelaci interpretovat následovně:
   > 
@@ -366,6 +377,11 @@ ORDER BY price_percentage_change DESC
   > + ±0,60 - ±0,79 silná  
   > + ±0,80 - ±1,00 velmi silná  
 
+	> **Lagovaná korelace** zkoumá, zda existuje statisktická souvislost mezi hodnotou jedné proměnné v daném období a hodnotou druhé proměnné v následujícím období.  
+ 
+	> **Lineární regrese** je statistická a analytická metoda, která ve své nejjednodušší podobě zkoumá vztah mezi dvěma proměnnými: nezávislou proměnnou, která má ovlivňovat závislou proměnnou. Tuto metodu lze využít i k predikci budoucích hodnot závislé proměnné. 
+ 
+ 	> **Lagovaná regrese** je rozšířená forma lineární regrese, která zohledňuje časové zpoždění mezi promněnnými.
 ```
 WITH averaged_data AS (
   SELECT
