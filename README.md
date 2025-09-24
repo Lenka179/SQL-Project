@@ -263,8 +263,8 @@ ORDER BY
 
 - V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50 : 50.  
 - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **641 kilogramů chleba a 716 litrů mléka**.
-- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **670 kilogramů chleba a 820 litrů mléka**.
+- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **`641` kilogramů chleba a `716` litrů mléka**.
+- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **`670` kilogramů chleba a `820` litrů mléka**.
 
 ```
 SELECT 
@@ -291,8 +291,8 @@ ORDER BY payroll_year
 
 - Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
 - Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
-- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je **0,56 %**.
-- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (-2,73 resp. -2,43 %).
+- Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je `0,56 %`.
+- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (`-2,73` resp. `-2,43 %`).
 
 ```
 WITH price_diffs AS (
@@ -334,7 +334,7 @@ ORDER BY relative_growth_percent ASC
 
 - Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006–2018, kdy máme dostupná data o mzdách i cenách.  
 - **V žádném ze sledovaných období nebyl meziroční nárůst cen potravin vyšší alespoň o 10 % oproti růstu mezd.**
-- Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o 9,63 %, ale v tomtéž roce došlo také k nárůstu průměrných mezd o 6,31 %.
+- Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o `9,63 %`, ale v tomtéž roce došlo také k nárůstu průměrných mezd o `6,31 %`.
 
 ```
 SELECT 
@@ -354,50 +354,95 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-- Na první pohled se může zdát, že výše HDP nemá přímý vliv na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.  
-- Zvolila jsem dvě analytické metody. ***Pearsonovu korelaci*** a ***regresi*** včetně jejich ***lagovaných variant***.
-- ***Pearsonova korelace*** ukazuje, zda mezi HDP a cenami potravin či mzdami existuje nějaký statisticky významný vztah.
-- ***Lineární regrese*** je analytická metoda, která nám ukazuje lineární závislost mezi dvěma hodnotami. V našem případě výše HDP vůči mzdám/cenám potravin.
-- Pro lepší čitelnost výsledků analýzy jsem HDP přepočítala na miliardy.
-- ***Lagovaná regrese*** ukáže, zda se vliv HDP projeví s časovým zpožděním (jak HDP v jednom roce ovlivňuje ceny a mzdy v roce následujícím). HDP je i v tomto případě přepočítáno na miliardy.  
--
-	+ ***Pearsonova korelace***, ukazuje, že **HDP a průměrné mzdy vykazují silnou pozitivní korelaci** (0,84). To naznačuje, že růst HDP je spojen s růstem mezd.  
-- Podobně i korelace mezi **HDP a průměrnými cenami potravin** (0,89) ukazuje, že ekonomický růst **může ovlivňovat cenovou hladinu**.
-  	+ Stejně tak ***lagovaná korelace*** signalizuje, že **meziročně HDP má vliv na mzdy (0,85) a ceny potravin (0,83)**. 
-- Je však třeba mít na paměti, že korelace neprokazuje kauzalitu (příčinný vztah) - roli zde mohou hrát i další faktrory.
+Na první pohled se může zdát, že výše HDP nemá přímý dopad na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.
 
-  	+ ***Lineární regrese*** ukazuje, že pokud se zvýší HDP o miliardu, průměrná mzdy vzrostou o 129,92 Kč a průměrná ceny o 0,24 Kč.
-  	+ ***Lagovaná regrese*** ukazuje, že výše HDP v jednom roce ovlivní průměrnou mzdu v následujícím roce o 138,29 Kč a průměrnou cenu potravin o 0,24 Kč. 
-  
-  	> **Pearsonova korelace** měří sílu lineárního vztahu mezi dvěma proměnnými v celé datové sadě. Hodnota korelačního koeficientu leží v intervalu -1 do 1. Krajní hodnoty blízké -1 nebo 1 značí silnou lineární korelaci, zatímco hodnoty blízké nule poukazují na velmi slabou nebo žádnou lineární závislost. Obecně lze korelaci interpretovat následovně:
-  > 
-  > + 0,00 - ±0,19 velmi slabá  
-  > + ±0,20 - ±0,39 slabá  
-  > + ±0,40 - ±0,59 střední  
-  > + ±0,60 - ±0,79 silná  
-  > + ±0,80 - ±1,00 velmi silná  
+V rámci analýzy jsem využila dvě metody: **Pearsonovu korelaci** a **lineární regresi**, včetně jejich **lagovaných variant**, které zohledňují časové zpoždění mezi proměnnými.
 
-	> **Lagovaná korelace** zkoumá, zda existuje statisktická souvislost mezi hodnotou jedné proměnné v daném období a hodnotou druhé proměnné v následujícím období.  
- 
-	> **Lineární regrese** je statistická a analytická metoda, která ve své nejjednodušší podobě zkoumá vztah mezi dvěma proměnnými: nezávislou proměnnou, která má ovlivňovat závislou proměnnou. Tuto metodu lze využít i k predikci budoucích hodnot závislé proměnné. 
- 
- 	> **Lagovaná regrese** je rozšířená forma lineární regrese, která zohledňuje časové zpoždění mezi promněnnými.
+- **Pearsonova korelace** slouží k identifikaci statisticky významného vztahu mezi HDP a průměrnými mzdami či cenami potravin.
+- **Lineární regrese** kvantifikuje sílu tohoto vztahu — tedy o kolik se změní závislá proměnná (mzdy nebo ceny), pokud se HDP zvýší o jednotku.
+- **Lagované varianty** zkoumjí, zda se vliv HDP projeví s časovým odstupem.
+
+Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
+
+### Výsledky
+
+- **Pearsonova korelace** mezi HDP a průměrnými mzdami dosahuje hodnoty `0.84`, což značí velmi silnou pozitivní souvislost. Korelace mezi HDP a cenami potravin činí `0.89`, což naznačuje, že ekonomický růst může ovlivňovat cenovou hladinu.
+- **Lagovaná korelace** potvrzuje meziroční vliv HDP: korelace s mzdami dosahuje `0.85`, s cenami potravin `0.83`.
+- Je však důležité zdůraznit, že korelace sama o sobě neprokazuje kauzalitu — výsledky mohou být ovlivněny i dalšími faktory.
+
+### Regresní analýza
+
+- Pokud HDP vzroste o **1 miliardu Kč**, průměrná mzda se ve stejném roce zvýší o `129.92 Kč`, průměrná cena potravin o `0.24 Kč`.
+- V případě **lagované regrese** se ukazuje, že HDP z předchozího roku ovlivňuje průměrnou mzdu v následujícím roce o `138.29 Kč`, průměrnou cenu potravin opět o `0.24 Kč`.
+
+### Interpretace korelačního koeficientu
+
+| Hodnota korelace | Interpretace       |
+|------------------|--------------------|
+| 0.00 – ±0.19     | velmi slabá        |
+| ±0.20 – ±0.39    | slabá              |
+| ±0.40 – ±0.59    | střední            |
+| ±0.60 – ±0.79    | silná              |
+| ±0.80 – ±1.00    | velmi silná        |
+
+### Definice použitých metod
+
+- **Pearsonova korelace** je statistická metoda, která měří sílu a směr lineárního vztahu mezi dvěma číselnými proměnnými. Hodnota korelačního koeficientu se pohybuje v intervalu od -1 do 1. Hodnoty blízké ±1 značí silnou lineární závislost, zatímco hodnoty blízké nule ukazují na slabý nebo žádný lineární vztah.
+
+- **Lagovaná korelace** zkoumá statistickou souvislost mezi hodnotou jedné proměnné v daném období a hodnotou druhé proměnné v následujícím období.
+
+- **Lineární regrese** je statistická a analytická metoda, která ve své nejjednodušší podobě zkoumá vztah mezi dvěma proměnnými: nezávislou proměnnou, která má ovlivňovat závislou proměnnou. Tuto metodu lze využít i k predikci budoucích hodnot závislé proměnné.
+
+- **Lagovaná regrese** je rozšířená forma lineární regrese, která zohledňuje časové zpoždění mezi proměnnými — tedy vliv, který se neprojeví okamžitě, ale až v následujícím období.
+
+
 ```
-WITH averaged_data AS (
-  SELECT
-    YEAR,
-    country,
-    avg(average_price) AS overall_avg_price,
-    avg(average_payroll) AS overall_avg_payroll,
-    avg(gdp) AS gdp
-  FROM t_lenka_stankova_project_sql_secondary_final
-  WHERE country = 'Czech Republic'
-  GROUP BY YEAR, country
+WITH agregated AS ( 
+	SELECT 
+		YEAR,
+		avg(gdp) AS avg_gdp,
+		avg(average_payroll) AS avg_payroll,
+		avg(average_price) AS avg_price
+	FROM t_lenka_stankova_project_sql_secondary_final AS tlspssf 
+	GROUP BY YEAR 
+),
+lagged AS ( 
+	SELECT 
+		YEAR,
+		avg_gdp,
+		LEAD(avg_payroll) OVER (ORDER BY year) AS payroll_next_year,
+		LEAD(avg_price) OVER (ORDER BY year) AS price_next_year
+	FROM agregated
+),
+regression AS ( 
+	SELECT 
+		round(REGR_SLOPE(avg_payroll, avg_gdp / 1000000000)::NUMERIC ,2) AS reg_payroll_vs_gdp,
+		round(REGR_SLOPE(avg_price, avg_gdp / 1000000000)::NUMERIC ,2) AS reg_price_vs_gdp,
+		round(CORR(avg_payroll, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_payroll_vs_gdp,
+		round(CORR(avg_price, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_price_vs_gdp
+FROM agregated 
+),
+reg_corr_lagged AS ( 
+	SELECT
+		round(REGR_SLOPE(payroll_next_year, avg_gdp / 1000000000)::NUMERIC, 2) AS reg_payroll_lagged,
+		round(REGR_SLOPE(price_next_year, avg_gdp / 1000000000)::NUMERIC, 2) AS reg_price_lagged,
+		round(CORR(payroll_next_year, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_payroll_lagged,
+		round(CORR(price_next_year, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_price_lagged
+	FROM lagged 
+	WHERE payroll_next_year IS NOT NULL AND price_next_year IS NOT NULL 
 )
-SELECT
-  round(corr(gdp, overall_avg_price)::NUMERIC, 2) AS corr_gdp_price,
-  round(corr(gdp, overall_avg_payroll)::NUMERIC, 2) AS corr_gdp_payroll
-FROM averaged_data;
+SELECT 
+	rs.corr_payroll_vs_gdp,
+	rs.corr_price_vs_gdp,
+	rl.corr_payroll_lagged,
+	rl.corr_price_lagged,
+	rs.reg_payroll_vs_gdp,
+	rs.reg_price_vs_gdp,
+	rl.reg_payroll_lagged,
+	rl.reg_price_lagged
+FROM regression AS rs
+CROSS JOIN reg_corr_lagged AS rl
+;
 ```
 
 ---
