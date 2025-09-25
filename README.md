@@ -280,8 +280,8 @@ SELECT
 FROM t_lenka_stankova_project_sql_primary_final
 WHERE average_payroll  IS NOT NULL 
 	AND average_price  IS NOT NULL 
-	AND category_code IN ('114201','111301')
-	AND payroll_year IN ('2006','2018')
+	AND category_code IN (114201,111301)
+	AND payroll_year IN (2006,2018)
 GROUP BY
 	payroll_year,
 	category_name,
