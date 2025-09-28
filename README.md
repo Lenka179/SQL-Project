@@ -84,7 +84,7 @@ LEFT JOIN czechia_payroll_industry_branch AS cpib
 ### 2.2 Sekundární tabulka
 
 Sekundární tabuka propojuje údaje o cenách a mzdách z primární tabulky podle kalendářního roku s některými makroekonomickými ukazateli. Slouží jako datový základ pro zodpovězení závěrečné výzkumné otázky.  
-Výběr evropských států je proveden přes propojení s tabulkou zemí. 
+Výběr evropských států je proveden přes propojení s tabulkou zemí a časové rozpětí je stejné jako primární přehled pro Českou Republiku.  
 Pro účely případného rozšíření analýzy byla v tabulce ponechána i další ekonomická data (např. GINI ukazatel, populace apod.)  
 
 *Příkaz k vytvoření tabulky:*
@@ -121,6 +121,7 @@ INNER JOIN europe_countries
 	ON e.country = europe_countries.country
 LEFT JOIN t_lenka_stankova_project_sql_primary_final AS tlsp
 	ON e.YEAR = tlsp.payroll_year AND e.country = 'Czech Republic'
+WHERE e.YEAR BETWEEN 2000 AND 2021
 ;
 ```
 
@@ -305,7 +306,7 @@ ORDER BY price_percentage_change DESC
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
 Na první pohled se může zdát, že výše HDP nemá přímý dopad na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.  
-Pomocí dotazu jsem omezila data na pouze Českou Republiku a roky 2006 až 2018, protože pouze v tomto rozmezí máme dostupná data o mzdách i cenách potravin. 
+Pomocí dotazu jsem omezila data pouze na Českou Republiku a roky 2006 až 2018, protože pouze v tomto rozmezí máme dostupná data o mzdách i cenách potravin. 
 
 V rámci analýzy jsem využila dvě metody: **Pearsonovu korelaci** a **lineární regresi**, včetně jejich **lagovaných variant**, které zohledňují časové zpoždění mezi proměnnými.
 
@@ -323,8 +324,8 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
 ### Regresní analýza
 
-- Pokud HDP vzroste o **1 miliardu Kč**, průměrná mzda se ve stejném roce zvýší o `177,24 Kč`, průměrná cena potravin o `0.3 Kč`.
-- V případě **lagované regrese** se ukazuje, že HDP z předchozího roku ovlivňuje průměrnou mzdu v následujícím roce o `201,68 Kč`, průměrnou cenu potravin opět o `0.32 Kč`.
+- Pokud HDP vzroste o **1 miliardu Kč**, průměrná mzda se ve stejném roce zvýší o `177,24 Kč` a průměrná cena potravin o `0.3 Kč`.
+- V případě **lagované regrese** se ukazuje, že HDP z předchozího roku ovlivňuje průměrnou mzdu v následujícím roce o `201,68 Kč` a průměrnou cenu potravin opět o `0.32 Kč`.
 
 ### Interpretace korelačního koeficientu
 
@@ -348,15 +349,15 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
 
 ```
-WITH agregated AS ( 
+WITH aggregated AS ( 
 	SELECT 
-		YEAR,
+		year,
 		country,
 		gdp AS avg_gdp,
 		avg(average_payroll) AS avg_payroll,
 		avg(average_price) AS avg_price
 	FROM t_lenka_stankova_project_sql_secondary_final
-	WHERE YEAR BETWEEN 2006 AND 2018 AND country = 'Czech Republic'
+	WHERE year BETWEEN 2006 AND 2018 AND country = 'Czech Republic'
 	GROUP BY YEAR, country, gdp
 ),
 lagged AS ( 
@@ -365,7 +366,7 @@ lagged AS (
 		avg_gdp,
 		LEAD(avg_payroll) OVER (ORDER BY year) AS payroll_next_year,
 		LEAD(avg_price) OVER (ORDER BY year) AS price_next_year
-	FROM agregated
+	FROM aggregated
 ),
 regression AS ( 
 	SELECT 
@@ -373,7 +374,7 @@ regression AS (
 		round(REGR_SLOPE(avg_price, avg_gdp / 1000000000)::NUMERIC, 2) AS reg_price_vs_gdp,
 		round(CORR(avg_payroll, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_payroll_vs_gdp,
 		round(CORR(avg_price, avg_gdp / 1000000000)::NUMERIC, 2) AS corr_price_vs_gdp
-FROM agregated 
+FROM aggregated 
 ),
 reg_corr_lagged AS ( 
 	SELECT
