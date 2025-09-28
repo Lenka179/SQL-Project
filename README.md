@@ -284,7 +284,7 @@ ORDER BY relative_growth_percent ASC
 ## 3.4 Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?
 
 - Z dostupných dat vyplývá, že pro analýzu lze použít pouze období 2006–2018, kdy máme dostupná data o mzdách i cenách.  
-- **V žádném ze sledovaných období nebyl meziroční nárůst cen potravin vyšší alespoň o 10 % oproti růstu mezd.**
+- **V žádném ze sledovaných období nebyl meziroční nárůst cen potravin vyšší než 10 % oproti růstu mezd.**
 - Nejvyšší meziroční zvýšení cen potravin bylo v roce 2017 o `9,63 %`, ale v tomtéž roce došlo také k nárůstu průměrných mezd o `6,31 %`.
 
 ```
