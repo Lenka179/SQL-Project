@@ -46,7 +46,7 @@ WITH cp_prepared AS (
 		calculation_code,
 		industry_branch_code
 ),
-	cp2_prepared AS (
+cp2_prepared AS (
 	SELECT 
 		date_part('YEAR', date_from) AS year,
 		category_code,
@@ -83,74 +83,20 @@ LEFT JOIN czechia_payroll_industry_branch AS cpib
 
 ### 2.2 Sekundární tabulka
 
-Sekundární tabuka propojuje agregované údaje o cenách a mzdách podle kalendářního roku s některými makroekonomickými ukazateli. Slouží jako datový základ pro zodpovězení závěrečné výzkumné otázky.  
+Sekundární tabuka propojuje údaje o cenách a mzdách z primární tabulky podle kalendářního roku s některými makroekonomickými ukazateli. Slouží jako datový základ pro zodpovězení závěrečné výzkumné otázky.  
+Výběr evropských států je proveden přes propojení s tabulkou zemí. 
 Pro účely případného rozšíření analýzy byla v tabulce ponechána i další ekonomická data (např. GINI ukazatel, populace apod.)  
-Agregace byla provedena pouze v nezbytném rozsahu, aby byla zachována možnost další manipulace s daty dle specifického zadání. 
-Tabulka byla vytvořena pomocí operace INNER JOIN mezi hlavními datovými zdroji, abychom zachovali pouze data za stejné období jako primární přehled za Českou Republiku.  
 
 *Příkaz k vytvoření tabulky:*
 ```
-CREATE TABLE t_lenka_stankova_project_sql_secondary_final AS 
-WITH price_prepared AS ( 
-	SELECT
-		category_code,
-		date_part('YEAR', date_from) AS price_year,
-		avg(value) AS average_price,
-		cpc2.name AS category_name
-	FROM czechia_price
-	LEFT JOIN czechia_price_category AS cpc2 
-		ON category_code = cpc2.code
-	GROUP BY 
-		category_code,
-		date_part('YEAR', date_from),
-		cpc2.name
-),
-payroll_prepared AS ( 
-	SELECT
-		cp.value_type_code,
-		cp.unit_code,
-		cp.calculation_code,
-		cp.industry_branch_code,
-		cp.payroll_year,
-		cpib.name AS industry_name,
-		cpu.name AS unit_name,
-		cpvt.name AS value_type_name,
-		cpc.name AS calculation_name,
-		avg(cp.value) AS average_payroll
-	FROM czechia_payroll AS cp
-	LEFT JOIN czechia_payroll_unit AS cpu
-		ON unit_code = cpu.code
-	LEFT JOIN czechia_payroll_value_type AS cpvt 
-		ON cp.value_type_code = cpvt.code 
-	LEFT JOIN czechia_payroll_calculation AS cpc 
-		ON cp.calculation_code = cpc.code 
-	LEFT JOIN czechia_payroll_industry_branch AS cpib 
-		ON cp.industry_branch_code = cpib.code 
-	WHERE value_type_code = '5958'
-	GROUP BY 
-		value_type_code,
-		unit_code,
-		calculation_code,
-		industry_branch_code,
-		payroll_year,
-		industry_name,
-		unit_name,
-		value_type_name,
-		calculation_name
-	)
-SELECT
-	pp.category_code,
-	pp.average_price,
-	pp.category_name,
-	pp2.value_type_code,
-	pp2.unit_code,
-	pp2.calculation_code,
-	pp2.industry_branch_code,
-	pp2.average_payroll,
-	pp2.unit_name,
-	pp2.industry_name,
-	pp2.value_type_name,
-	pp2.calculation_name,
+CREATE TABLE  t_lenka_stankova_project_sql_secondary_final  AS
+WITH europe_countries AS ( 
+	SELECT DISTINCT 
+		country
+	FROM countries
+	WHERE continent  = 'Europe'
+)
+SELECT 
 	e.country,
 	e.YEAR,
 	e.gdp,
@@ -158,23 +104,23 @@ SELECT
 	e.gini,
 	e.taxes,
 	e.fertility,
-	e.mortaliy_under5 AS mortality_under5
-	FROM economies AS e
-INNER JOIN price_prepared AS pp
-	ON e.YEAR = pp.price_year  
-INNER JOIN payroll_prepared AS pp2 
-	ON e.YEAR = pp2.payroll_year
-WHERE country IN (
-  'Albania', 'Andorra', 'Armenia', 'Austria', 'Belarus', 'Belgium',
-  'Bosnia and Herzegovina', 'Bulgaria', 'Channel Islands', 'Croatia',
-  'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Faroe Islands',
-  'Finland', 'France', 'Georgia', 'Germany', 'Gibraltar', 'Greece',
-  'Hungary', 'Iceland', 'Ireland', 'Italy', 'Kosovo', 'Latvia',
-  'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova',
-  'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway',
-  'Poland', 'Portugal', 'Romania', 'San Marino', 'Serbia', 'Slovakia',
-  'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Ukraine', 'United Kingdom'
-)
+	e.mortaliy_under5,
+	tlsp.unit_code,
+	tlsp.calculation_code,
+	tlsp.industry_branch_code,
+	tlsp.category_code,
+	tlsp.region_code,
+	tlsp.price_unit,
+	tlsp.category_name,
+	tlsp.price_value,
+	tlsp.branch_name,
+	tlsp.average_payroll,
+	tlsp.average_price
+FROM economies AS e 
+INNER JOIN europe_countries 
+	ON e.country = europe_countries.country
+LEFT JOIN t_lenka_stankova_project_sql_primary_final AS tlsp
+	ON e.YEAR = tlsp.payroll_year AND e.country = 'Czech Republic'
 ;
 ```
 
@@ -201,46 +147,46 @@ WITH prev_average_payroll AS (
 		payroll_year,
 		industry_branch_code
 ),
-	current_payroll AS ( 
-		SELECT 
-			payroll_year,
-			industry_branch_code,
-			branch_name,
-			avg(average_payroll) AS current_avg_payroll
-		FROM t_lenka_stankova_project_sql_primary_final
-		GROUP BY 
-			payroll_year,
-			industry_branch_code,
-			branch_name
+current_payroll AS ( 
+	SELECT 
+		payroll_year,
+		industry_branch_code,
+		branch_name,
+		avg(average_payroll) AS current_avg_payroll
+	FROM t_lenka_stankova_project_sql_primary_final
+	GROUP BY 
+		payroll_year,
+		industry_branch_code,
+		branch_name
 ),
-	payroll_comparison AS ( 
-		SELECT 
-			cp.payroll_year,
-			cp.industry_branch_code,
-			cp.branch_name,
-			cp.current_avg_payroll,
-			pap.previous_avg_payroll,
-			cp.current_avg_payroll - pap.previous_avg_payroll AS payroll_diff,
-			CASE 
-				WHEN cp.current_avg_payroll > pap.previous_avg_payroll THEN 'higher'
-				WHEN cp.current_avg_payroll < pap.previous_avg_payroll THEN 'lower'
-				WHEN pap.previous_avg_payroll IS NULL THEN 'null'
-				ELSE 'equal'	
-			END AS annual_payroll_trend	
-		FROM current_payroll AS cp
-		LEFT JOIN prev_average_payroll AS pap
-			ON cp.industry_branch_code = pap.industry_branch_code 
-			AND cp.payroll_year = pap.payroll_year +1
+payroll_comparison AS ( 
+	SELECT 
+		cp.payroll_year,
+		cp.industry_branch_code,
+		cp.branch_name,
+		cp.current_avg_payroll,
+		pap.previous_avg_payroll,
+		cp.current_avg_payroll - pap.previous_avg_payroll AS payroll_diff,
+		CASE 
+			WHEN cp.current_avg_payroll > pap.previous_avg_payroll THEN 'higher'
+			WHEN cp.current_avg_payroll < pap.previous_avg_payroll THEN 'lower'
+			WHEN pap.previous_avg_payroll IS NULL THEN 'null'
+			ELSE 'equal'	
+		END AS annual_payroll_trend	
+	FROM current_payroll AS cp
+	LEFT JOIN prev_average_payroll AS pap
+		ON cp.industry_branch_code = pap.industry_branch_code 
+		AND cp.payroll_year = pap.payroll_year +1
 ),
-	payroll_sum AS ( 
-		SELECT 
-			cp.industry_branch_code,
-			sum(cp.current_avg_payroll - pap.previous_avg_payroll) AS overall_payroll_trend
-		FROM current_payroll AS cp 
-		LEFT JOIN prev_average_payroll AS pap 
-			ON cp.industry_branch_code = pap.industry_branch_code
-			AND cp.payroll_year = pap.payroll_year +1
-		GROUP BY cp.industry_branch_code
+payroll_sum AS ( 
+	SELECT 
+		cp.industry_branch_code,
+		sum(cp.current_avg_payroll - pap.previous_avg_payroll) AS overall_payroll_trend
+	FROM current_payroll AS cp 
+	LEFT JOIN prev_average_payroll AS pap 
+		ON cp.industry_branch_code = pap.industry_branch_code
+		AND cp.payroll_year = pap.payroll_year +1
+	GROUP BY cp.industry_branch_code
 )
 SELECT
 	pc.payroll_year,
@@ -358,7 +304,8 @@ ORDER BY price_percentage_change DESC
 
 ## 3.5 Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
-Na první pohled se může zdát, že výše HDP nemá přímý dopad na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.
+Na první pohled se může zdát, že výše HDP nemá přímý dopad na růst mezd ani cen potravin. Použitím vybraných analytických metod však docházíme k opačnému závěru.  
+Pomocí dotazu jsem omezila data na pouze Českou Republiku a roky 2006 až 2018, protože pouze v tomto rozmezí máme dostupná data o mzdách i cenách potravin. 
 
 V rámci analýzy jsem využila dvě metody: **Pearsonovu korelaci** a **lineární regresi**, včetně jejich **lagovaných variant**, které zohledňují časové zpoždění mezi proměnnými.
 
@@ -370,14 +317,14 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
 ### Korelace
 
-- **Pearsonova korelace** mezi HDP a průměrnými mzdami dosahuje hodnoty `0.84`, což značí velmi silnou souvislost. Korelace mezi HDP a cenami potravin je `0.89`, což naznačuje, že ekonomický růst může ovlivňovat cenovou hladinu.
-- **Lagovaná korelace** potvrzuje meziroční vliv HDP. Korelace s mzdami dosahuje `0.85` a s cenami potravin `0.83`.
+- **Pearsonova korelace** mezi HDP a průměrnými mzdami dosahuje hodnoty `0.92`, což značí velmi silnou souvislost. Korelace mezi HDP a cenami potravin je `0.89`, což naznačuje, že ekonomický růst může ovlivňovat cenovou hladinu.
+- **Lagovaná korelace** potvrzuje meziroční vliv HDP. Korelace s mzdami dosahuje `0.95` a s cenami potravin `0.83`.
 - Je však důležité zdůraznit, že korelace sama o sobě neprokazuje kauzalitu - výsledky mohou být ovlivněny i dalšími faktory.
 
 ### Regresní analýza
 
-- Pokud HDP vzroste o **1 miliardu Kč**, průměrná mzda se ve stejném roce zvýší o `129.92 Kč`, průměrná cena potravin o `0.24 Kč`.
-- V případě **lagované regrese** se ukazuje, že HDP z předchozího roku ovlivňuje průměrnou mzdu v následujícím roce o `138.29 Kč`, průměrnou cenu potravin opět o `0.24 Kč`.
+- Pokud HDP vzroste o **1 miliardu Kč**, průměrná mzda se ve stejném roce zvýší o `177,24 Kč`, průměrná cena potravin o `0.3 Kč`.
+- V případě **lagované regrese** se ukazuje, že HDP z předchozího roku ovlivňuje průměrnou mzdu v následujícím roce o `201,68 Kč`, průměrnou cenu potravin opět o `0.32 Kč`.
 
 ### Interpretace korelačního koeficientu
 
@@ -404,11 +351,13 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 WITH agregated AS ( 
 	SELECT 
 		YEAR,
-		avg(gdp) AS avg_gdp,
+		country,
+		gdp AS avg_gdp,
 		avg(average_payroll) AS avg_payroll,
 		avg(average_price) AS avg_price
-	FROM t_lenka_stankova_project_sql_secondary_final AS tlspssf 
-	GROUP BY YEAR 
+	FROM t_lenka_stankova_project_sql_secondary_final
+	WHERE YEAR BETWEEN 2006 AND 2018 AND country = 'Czech Republic'
+	GROUP BY YEAR, country, gdp
 ),
 lagged AS ( 
 	SELECT 
