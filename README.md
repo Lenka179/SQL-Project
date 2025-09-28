@@ -243,7 +243,7 @@ ORDER BY payroll_year
 - Chceme-li zjistit, která kategorie potravin zdražuje nejpomaleji, nestačí vyhodnotit nejnižší percentuální meziroční nárůst ceny, protože tato hodnota nezohledňuje kontext měřeného období (vývoj průměrných cen v průběhu let).
 - Proto jsem zvolila vhodnější variantu výpočtu a to **percentuální relativní růst ceny vůči průměrné ceně kategorie**. 
 - Nejpomaleji zdražuje kategorie s názvem **Banány žluté**. Relativní percentuální nárůst ceny za celé období je `0,56 %`.
-- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (`-2,73` resp. `-2,43 %`).
+- Z dostupných dat je dokonce zřejmé, že kategorie *Rajská jablka červená kulatá* a *Cukr krystalový* zaznamenávají relativní propad ceny (`-2,73` a `-2,43 %`).
 
 ```
 WITH price_diffs AS (
