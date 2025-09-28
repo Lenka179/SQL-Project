@@ -214,8 +214,8 @@ ORDER BY
 
 - V otázce není definované v jakém podílu má být rozdělena mzda mezi komodity, proto ji rozdělíme v poměru 50 : 50.  
 - Do srovnatelného období můžeme zahrnout pouze odbdobí 2006 až 2018. Mimo toto období máme k dispozici data o průměrných mzdách, ale nemáme dostupná data o cenách potravin.
-- V roce **2006** jsme si mohli za průměrnou mzdu 20678 Kč koupit **`641` kilogramů chleba a `716` litrů mléka**.
-- V roce **2018** jsme si mohli za průměrnou mzdu 32486 Kč koupit **`670` kilogramů chleba a `820` litrů mléka**.
+- V roce **2006** jsme si mohli za průměrnou mzdu 20 678 Kč koupit **`641` kilogramů chleba a `716` litrů mléka**.
+- V roce **2018** jsme si mohli za průměrnou mzdu 32 486 Kč koupit **`670` kilogramů chleba a `820` litrů mléka**.
 
 ```
 SELECT 
