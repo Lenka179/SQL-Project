@@ -84,7 +84,7 @@ LEFT JOIN czechia_payroll_industry_branch AS cpib
 ### 2.2 Sekundární tabulka
 
 Sekundární tabuka propojuje údaje o cenách a mzdách z primární tabulky podle kalendářního roku s některými makroekonomickými ukazateli. Slouží jako datový základ pro zodpovězení závěrečné výzkumné otázky.  
-Výběr evropských států je proveden přes propojení s tabulkou zemí a časové rozpětí je stejné jako primární přehled pro Českou Republiku.  
+Výběr evropských států je proveden přes propojení s tabulkou všech států světa a časové rozpětí je stejné jako primární přehled pro Českou Republiku.  
 Pro účely případného rozšíření analýzy byla v tabulce ponechána i další ekonomická data (např. GINI ukazatel, populace apod.)  
 
 *Příkaz k vytvoření tabulky:*
