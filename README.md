@@ -345,7 +345,7 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
 - **Lineární regrese** je statistická a analytická metoda, která ve své nejjednodušší podobě zkoumá vztah mezi dvěma proměnnými: nezávislou proměnnou, která má ovlivňovat závislou proměnnou. Tuto metodu lze využít i k predikci budoucích hodnot závislé proměnné.
 
-- **Lagovaná regrese** je rozšířená forma lineární regrese, která zohledňuje časové zpoždění mezi proměnnými - tedy vliv, který se neprojeví okamžitě, ale až v následujícím období.
+- **Lagovaná regrese** je rozšířená forma lineární regrese, která zohledňuje časové zpoždění mezi proměnnými – tedy vliv, který se neprojeví okamžitě, ale až v následujícím období.
 
 
 ```
