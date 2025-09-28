@@ -312,7 +312,7 @@ V rámci analýzy jsem využila dvě metody: **Pearsonovu korelaci** a **lineár
 
 - **Pearsonova korelace** slouží k identifikaci statisticky významného vztahu mezi HDP a průměrnými mzdami či cenami potravin.
 - **Lineární regrese** kvantifikuje sílu tohoto vztahu – tedy o kolik se změní závislá proměnná (mzdy nebo ceny), pokud se HDP zvýší o jednotku.
-- **Lagované varianty** zkoumjí, zda se vliv HDP projeví s časovým odstupem.
+- **Lagované varianty** zkoumají, zda se vliv HDP projeví s časovým odstupem.
 
 Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
