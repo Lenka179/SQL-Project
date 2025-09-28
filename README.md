@@ -320,7 +320,7 @@ Pro lepší interpretaci výsledků jsem HDP převedla na miliardy korun.
 
 - **Pearsonova korelace** mezi HDP a průměrnými mzdami dosahuje hodnoty `0.92`, což značí velmi silnou souvislost. Korelace mezi HDP a cenami potravin je `0.89`, což naznačuje, že ekonomický růst může ovlivňovat cenovou hladinu.
 - **Lagovaná korelace** potvrzuje meziroční vliv HDP. Korelace s mzdami dosahuje hodnoty `0.95` a s cenami potravin hodnoty `0.83`.
-- Je však důležité zdůraznit, že korelace sama o sobě neprokazuje kauzalitu - výsledky mohou být ovlivněny i dalšími faktory.
+- Je však důležité zdůraznit, že korelace sama o sobě neprokazuje kauzalitu – výsledky mohou být ovlivněny i dalšími faktory.
 
 ### Regresní analýza
 
